@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Bill Calendar</title>
+        <link rel="stylesheet" href="index.css">
+        <script type="module" src="calendar-day.js"></script>
+        <script type="module" src="calendar.js"></script>
+    </head>
+    <body>
+        <!-- Importing HTML templates from HTML documents probably won't
+             be a thing for a long time. It was a feature in Chrome for
+             a while, but that was removed. The web components people
+             have proposed an alternative, but it's moving along at a
+             glacial pace.
+
+             Anyways, I'm gonna put my templates here for now to keep
+             things simple.
+        -->
+        <template id="calendar-day">
+            <style>
+                #day-container {
+                    height: 100%;
+                }
+                #day-container:not(:hover) #add-bill-button {
+                    opacity: 0;
+                }
+                #add-bill-button {
+                    border: none;
+                    outline: inherit;
+                    background-color: red;
+                    color: white;
+                    float: right;
+                    font-weight: bold;
+                    padding: 8px 16px;
+                    cursor: pointer;
+                }
+                #add-bill-button:active {
+                    filter: brightness(80%);
+                }
+                #day-of-month {
+                    padding: 6px;
+                    background-color:aliceblue;
+                    width: fit-content;
+                }
+            </style>
+            <div id="day-container">
+                <div id="day-of-month"></div>
+                <ul>
+                    <slot name="bills"></slot>
+                </ul>
+                <button id="add-bill-button">Add Bill</button>
+            </div>
+        </template>
+
+        <h1 id="month-header"></h1>
+        <!-- I want to support mobile eventually so I'm making the
+             calendar out of divs with a css grid layout rather than
+             using a table; that way I can just style it differently
+             for mobile where a table wouldn't be easy to interact
+             with.
+        -->
+        <div id="calendar" data-start-day="Saturday">
+            <!-- Could we pre-populate this with 31 days and just
+                 "display: none;" the days that aren't present in the month?
+                 That'd make initial render a bit quicker.
+             -->
+             <div class="day-of-week-header">Sunday</div>
+             <div class="day-of-week-header">Monday</div>
+             <div class="day-of-week-header">Tuesday</div>
+             <div class="day-of-week-header">Wednesday</div>
+             <div class="day-of-week-header">Thursday</div>
+             <div class="day-of-week-header">Friday</div>
+             <div class="day-of-week-header">Saturday</div>
+             <padding-day></padding-day>
+             <padding-day></padding-day>
+             <padding-day></padding-day>
+             <padding-day></padding-day>
+             <padding-day></padding-day>
+             <padding-day></padding-day>
+             <calendar-day day-of-month="1"></calendar-day>
+             <calendar-day day-of-month="2"></calendar-day>
+             <calendar-day day-of-month="3"></calendar-day>
+             <calendar-day day-of-month="4"></calendar-day>
+             <calendar-day day-of-month="5"></calendar-day>
+             <calendar-day day-of-month="6"></calendar-day>
+             <calendar-day day-of-month="7"></calendar-day>
+             <calendar-day day-of-month="8"></calendar-day>
+             <calendar-day day-of-month="9"></calendar-day>
+             <calendar-day day-of-month="10"></calendar-day>
+             <calendar-day day-of-month="11"></calendar-day>
+             <calendar-day day-of-month="12"></calendar-day>
+             <calendar-day day-of-month="13"></calendar-day>
+             <calendar-day day-of-month="14"></calendar-day>
+             <calendar-day day-of-month="15"></calendar-day>
+             <calendar-day day-of-month="16"></calendar-day>
+             <calendar-day day-of-month="17"></calendar-day>
+             <calendar-day day-of-month="18"></calendar-day>
+             <calendar-day day-of-month="19"></calendar-day>
+             <calendar-day day-of-month="20"></calendar-day>
+             <calendar-day day-of-month="21"></calendar-day>
+             <calendar-day day-of-month="22"></calendar-day>
+             <calendar-day day-of-month="23"></calendar-day>
+             <calendar-day day-of-month="24"></calendar-day>
+             <calendar-day day-of-month="25"></calendar-day>
+             <calendar-day day-of-month="26"></calendar-day>
+             <calendar-day day-of-month="27"></calendar-day>
+             <calendar-day day-of-month="28"></calendar-day>
+             <calendar-day day-of-month="29"></calendar-day>
+             <calendar-day day-of-month="30"></calendar-day>
+             <calendar-day day-of-month="31"></calendar-day>
+        </div>
+        <table>
+            <tr>
+                <td>Total Due: </td>
+                <td>$1000</td>
+            </tr>
+            <tr>
+                <td>Total Past Due:</td>
+                <td>$0</td>
+            </tr>
+            <tr>
+                <td>Total Paid:</td>
+                <td>$1000</td>
+            </tr>
+        </table>
+    </body>
+</html>
