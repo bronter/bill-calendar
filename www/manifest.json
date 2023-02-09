@@ -1,0 +1,11 @@
+{
+    "name": "Bill Calendar",
+    "short_name": "Bill Calendar",
+    "description": "Simple dependency-free calendar for keeping track of bills",
+    "icons": [],
+    "start_url": "/",
+    "display": "standalone",
+    "scope": "/",
+    "background-color": "#FFF",
+    "theme_color": "#FFF"
+}
