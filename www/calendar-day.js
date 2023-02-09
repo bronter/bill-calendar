@@ -25,4 +25,6 @@ customElements.define('calendar-day', CalendarDay);
 class PaddingDay extends HTMLElement {}
 // padding-day basically exists so I can use nth-of-type to align the calendar start,
 // without having to worry about it interfering with anything else.
+// Technically, the browser handles unknown tags well enough where I don't have
+// to do this, but for the sake of well-defined behavior I'm doing it anyway.
 customElements.define('padding-day', PaddingDay);
