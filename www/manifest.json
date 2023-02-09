@@ -2,7 +2,11 @@
     "name": "Bill Calendar",
     "short_name": "Bill Calendar",
     "description": "Simple dependency-free calendar for keeping track of bills",
-    "icons": [],
+    "icons": [{
+        "src": "/favicon.png",
+        "type": "image/png",
+        "sizes": "16x16"
+    }],
     "start_url": "/",
     "display": "standalone",
     "scope": "/",
