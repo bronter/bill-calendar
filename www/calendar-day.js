@@ -4,7 +4,7 @@ class CalendarDay extends HTMLElement {
         const template = document.getElementById('calendar-day');
         const templateContent = template.content;
 
-        const shadowRoot = this.attachShadow({ mode: "open" });
+        const shadowRoot = this.attachShadow({ mode: 'open' });
         shadowRoot.appendChild(templateContent.cloneNode(true));
     }
 

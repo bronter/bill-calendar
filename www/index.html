@@ -4,13 +4,131 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Bill Calendar</title>
-        <link rel="manifest" href="/manifest.json">
+        <!-- <link rel="manifest" href="/manifest.json"> -->
         <script>
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/service-worker.js');
+                // FIXME: Something wrong with the serviceWorker? It's mpossible to
+                // get the stylesheet to update even after clearing the cache.
+                // Could be a browser glitch too (I'm on FF nightly iirc),
+                // should check on Chrome.
+                // navigator.serviceWorker.register('/service-worker.js');
             }
         </script>
-        <link rel="stylesheet" href="index.css">
+        <style>
+            /* TODO: High contrast option / dark mode */
+
+            @media screen and (min-width: 600px) {
+                date-nav {
+                    display: none;
+                }
+                #calendar {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+                    column-gap: 3px;
+                    row-gap: 3px;
+                }
+                
+                #calendar > *:not(.day-of-week-header) {
+                    /* TODO: A light lavendar color might look better with the yellow header, idk */
+                    background-color:lavender
+                }
+                
+                padding-day {
+                    opacity: 0;
+                }
+                
+                #calendar[data-start-day="Sunday"] > padding-day {
+                    display: none;
+                }
+                #calendar[data-start-day="Monday"] > padding-day:first-of-type ~ padding-day {
+                    display: none;
+                }
+                #calendar[data-start-day="Tuesday"] > padding-day:nth-of-type(2) ~ padding-day {
+                    display: none;
+                }
+                #calendar[data-start-day="Wednesday"] > padding-day:nth-of-type(3) ~ padding-day {
+                    display: none;
+                }
+                #calendar[data-start-day="Thursday"] > padding-day:nth-of-type(4) ~ padding-day {
+                    display: none;
+                }
+                #calendar[data-start-day="Friday"] > padding-day:nth-of-type(5) ~ padding-day {
+                    display: none;
+                }
+                /* No need for Saturday since all padding cells should be visible */
+                
+                #calendar[data-days-in-month="28"] > calendar-day:nth-of-type(28) ~ calendar-day {
+                    display: none;
+                }
+                #calendar[data-days-in-month="29"] > calendar-day:nth-of-type(29) ~ calendar-day {
+                    display: none;
+                }
+                #calendar[data-days-in-month="30"] > calendar-day:nth-of-type(30) ~ calendar-day {
+                    display: none;
+                }
+                
+                calendar-day:first-of-type {
+                    grid-column-start: calc(var(--offset) + 1);
+                }
+                
+                .day-of-week-header {
+                    text-align: center;
+                    padding-top: 4px;
+                    padding-bottom: 4px;
+                    background-color: lemonchiffon;
+                }
+                
+                #calendar > .current-day {
+                    background-color: khaki;
+                }
+            }
+
+            /* FIXME: Horribly broken on chrome */
+            /* Maybe ditch this layout and do what calendar on iOS does */
+            @media screen and (max-device-width: 600px) and (orientation: portrait) {
+                body {
+                    margin: 0;
+                }
+                #date-nav {
+                    position: sticky;
+                    top: 0;
+                    left: 0;
+                    height: 48px;
+                    width: calc(100vw - 32px);
+                    padding-left: 16px;
+                    padding-right: 16px;
+                    border: none;
+                    border-bottom: none;
+                    background-color: lemonchiffon;
+                }
+                #month-header {
+                    display: none;
+                }
+                .day-of-week-header {
+                    display: none;
+                }
+                padding-day {
+                    display: none;
+                }
+                calendar-day {
+                    background-color: lavender;
+                }
+                #totals {
+                    position: sticky;
+                    bottom: 0;
+                    left: 0;
+                    background-color: khaki;
+                    border-right: 3px solid black;
+                    border-top: 3px solid black;
+                }
+                td {
+                    padding: 2px 8px;
+                }
+                .past-due {
+                    color: crimson;
+                }
+            }
+        </style>
         <script type="module" src="calendar-day.js"></script>
         <script type="module" src="calendar.js"></script>
     </head>
@@ -47,6 +165,15 @@
                     background-color:aliceblue;
                     width: fit-content;
                 }
+                @media screen and (max-device-width: 600px) and (orientation: portrait) {
+                    #day-container {
+                        display: flex;
+                        flex-direction: column;
+                    }
+                    /* ul {
+                        flex-grow: 1;
+                    } */
+                }
             </style>
             <div id="day-container">
                 <div id="day-of-month"></div>
@@ -58,70 +185,62 @@
         </template>
 
         <h1 id="month-header"></h1>
-        <!-- I want to support mobile eventually so I'm making the
-             calendar out of divs with a css grid layout rather than
-             using a table; that way I can just style it differently
-             for mobile where a table wouldn't be easy to interact
-             with.
-        -->
-        <div id="calendar" data-start-day="Saturday">
-            <!-- Could we pre-populate this with 31 days and just
-                 "display: none;" the days that aren't present in the month?
-                 That'd make initial render a bit quicker.
-             -->
-             <div class="day-of-week-header">Sunday</div>
-             <div class="day-of-week-header">Monday</div>
-             <div class="day-of-week-header">Tuesday</div>
-             <div class="day-of-week-header">Wednesday</div>
-             <div class="day-of-week-header">Thursday</div>
-             <div class="day-of-week-header">Friday</div>
-             <div class="day-of-week-header">Saturday</div>
-             <padding-day></padding-day>
-             <padding-day></padding-day>
-             <padding-day></padding-day>
-             <padding-day></padding-day>
-             <padding-day></padding-day>
-             <padding-day></padding-day>
-             <calendar-day day-of-month="1"></calendar-day>
-             <calendar-day day-of-month="2"></calendar-day>
-             <calendar-day day-of-month="3"></calendar-day>
-             <calendar-day day-of-month="4"></calendar-day>
-             <calendar-day day-of-month="5"></calendar-day>
-             <calendar-day day-of-month="6"></calendar-day>
-             <calendar-day day-of-month="7"></calendar-day>
-             <calendar-day day-of-month="8"></calendar-day>
-             <calendar-day day-of-month="9"></calendar-day>
-             <calendar-day day-of-month="10"></calendar-day>
-             <calendar-day day-of-month="11"></calendar-day>
-             <calendar-day day-of-month="12"></calendar-day>
-             <calendar-day day-of-month="13"></calendar-day>
-             <calendar-day day-of-month="14"></calendar-day>
-             <calendar-day day-of-month="15"></calendar-day>
-             <calendar-day day-of-month="16"></calendar-day>
-             <calendar-day day-of-month="17"></calendar-day>
-             <calendar-day day-of-month="18"></calendar-day>
-             <calendar-day day-of-month="19"></calendar-day>
-             <calendar-day day-of-month="20"></calendar-day>
-             <calendar-day day-of-month="21"></calendar-day>
-             <calendar-day day-of-month="22"></calendar-day>
-             <calendar-day day-of-month="23"></calendar-day>
-             <calendar-day day-of-month="24"></calendar-day>
-             <calendar-day day-of-month="25"></calendar-day>
-             <calendar-day day-of-month="26"></calendar-day>
-             <calendar-day day-of-month="27"></calendar-day>
-             <calendar-day day-of-month="28"></calendar-day>
-             <calendar-day day-of-month="29"></calendar-day>
-             <calendar-day day-of-month="30"></calendar-day>
-             <calendar-day day-of-month="31"></calendar-day>
+        <input type="date" id="date-nav">
+        <div id="calendar">
+            <div class="day-of-week-header">Sunday</div>
+            <div class="day-of-week-header">Monday</div>
+            <div class="day-of-week-header">Tuesday</div>
+            <div class="day-of-week-header">Wednesday</div>
+            <div class="day-of-week-header">Thursday</div>
+            <div class="day-of-week-header">Friday</div>
+            <div class="day-of-week-header">Saturday</div>
+            <padding-day></padding-day>
+            <padding-day></padding-day>
+            <padding-day></padding-day>
+            <padding-day></padding-day>
+            <padding-day></padding-day>
+            <padding-day></padding-day>
+            <calendar-day day-of-month="1"></calendar-day>
+            <calendar-day day-of-month="2"></calendar-day>
+            <calendar-day day-of-month="3"></calendar-day>
+            <calendar-day day-of-month="4"></calendar-day>
+            <calendar-day day-of-month="5"></calendar-day>
+            <calendar-day day-of-month="6"></calendar-day>
+            <calendar-day day-of-month="7"></calendar-day>
+            <calendar-day day-of-month="8"></calendar-day>
+            <calendar-day day-of-month="9"></calendar-day>
+            <calendar-day day-of-month="10"></calendar-day>
+            <calendar-day day-of-month="11"></calendar-day>
+            <calendar-day day-of-month="12"></calendar-day>
+            <calendar-day day-of-month="13"></calendar-day>
+            <calendar-day day-of-month="14"></calendar-day>
+            <calendar-day day-of-month="15"></calendar-day>
+            <calendar-day day-of-month="16"></calendar-day>
+            <calendar-day day-of-month="17"></calendar-day>
+            <calendar-day day-of-month="18"></calendar-day>
+            <calendar-day day-of-month="19"></calendar-day>
+            <calendar-day day-of-month="20"></calendar-day>
+            <calendar-day day-of-month="21"></calendar-day>
+            <calendar-day day-of-month="22"></calendar-day>
+            <calendar-day day-of-month="23"></calendar-day>
+            <calendar-day day-of-month="24"></calendar-day>
+            <calendar-day day-of-month="25"></calendar-day>
+            <calendar-day day-of-month="26"></calendar-day>
+            <calendar-day day-of-month="27"></calendar-day>
+            <calendar-day day-of-month="28"></calendar-day>
+            <calendar-day day-of-month="29"></calendar-day>
+            <calendar-day day-of-month="30"></calendar-day>
+            <calendar-day day-of-month="31"></calendar-day>
         </div>
-        <table>
+        <table id="totals">
             <tr>
                 <td>Total Due: </td>
                 <td>$1000</td>
             </tr>
             <tr>
                 <td>Total Past Due:</td>
-                <td>$0</td>
+                <!-- Set the past-due class when amount is non-zero-->
+                <td class="past-due">$8</td>
             </tr>
             <tr>
                 <td>Total Paid:</td>

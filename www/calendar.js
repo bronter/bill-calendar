@@ -1,9 +1,12 @@
 const calendarElement = document.getElementById('calendar');
 
 const now = new Date();
+const dateInputFormatted = now.toISOString().substring(0, '0000-00-00'.length);
+document.getElementById('date-nav').value = dateInputFormatted;
 
 const currentDayOfMonth = now.getDate();
-// TODO: DOM Updates should be put in a requestAnimationFrame
+let selectedDayOfMonth = currentDayOfMonth;
+
 const currentDayElement = document.getElementsByTagName('calendar-day').item(currentDayOfMonth - 1);
 currentDayElement.classList.toggle('current-day')
 
