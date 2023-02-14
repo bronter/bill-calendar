@@ -45,9 +45,9 @@ updateHeadersAndCalendar();
 selectedDayElement.classList.toggle('current-day', true);
 
 function updateSelectedDay() {
-    selectedDayElement.classList.toggle('current-day', false);
+    selectedDayElement.classList.remove('current-day');
     selectedDayElement = calendarDayNodeList.item(selectedDayOfMonth - 1);
-    selectedDayElement.classList.toggle('current-day', true);
+    selectedDayElement.classList.add('current-day');
 }
 
 dateNav.addEventListener('change', e => {
