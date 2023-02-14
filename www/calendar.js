@@ -1,8 +1,6 @@
 const calendarElement = document.getElementById('calendar');
 
 const now = new Date();
-const dateInputFormatted = now.toISOString().substring(0, '0000-00-00'.length);
-document.getElementById('date-nav').value = dateInputFormatted;
 
 const currentDayOfMonth = now.getDate();
 let selectedDayOfMonth = currentDayOfMonth;
@@ -12,6 +10,11 @@ currentDayElement.classList.toggle('current-day')
 
 const currentYear = now.getFullYear();
 const currentMonth = now.getMonth();
+const formattedYear = String(currentYear).padStart(4, '0');
+const formattedMonth = String(currentMonth + 1).padStart(2, '0');
+const formattedDay = String(currentDayOfMonth).padStart(2, '0');
+const dateInputFormatted = `${formattedYear}-${formattedMonth}-${formattedDay}`;
+document.getElementById('date-nav').value = dateInputFormatted;
 // Not i18n friendly but that's more work for later
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 document.getElementById('month-header').textContent = months[currentMonth]
