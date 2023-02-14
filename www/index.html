@@ -21,10 +21,11 @@
                 color: crimson;
             }
 
+            .current-day {
+                background-color: khaki;
+            }
+
             @media screen and (min-width: 600px) {
-                #date-nav {
-                    display: none;
-                }
                 #calendar {
                     display: grid;
                     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
@@ -32,7 +33,7 @@
                     row-gap: 3px;
                 }
                 
-                #calendar > *:not(.day-of-week-header) {
+                padding-day, calendar-day {
                     background-color:lavender
                 }
                 
@@ -79,10 +80,6 @@
                     padding-top: 4px;
                     padding-bottom: 4px;
                     background-color: lemonchiffon;
-                }
-                
-                #calendar > .current-day {
-                    background-color: khaki;
                 }
             }
 
@@ -144,6 +141,7 @@
             <style>
                 #day-container {
                     height: 100%;
+                    background-color: inherit;
                 }
                 #add-bill-button {
                     border: none;
