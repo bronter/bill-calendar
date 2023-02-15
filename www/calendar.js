@@ -6,7 +6,7 @@ const yyyymmLength = 'yyyy-mm'.length;
 const calendarElement = document.getElementById('calendar');
 const calendarDayNodeList = document.getElementsByTagName('calendar-day');
 const dateNav = document.getElementById('date-nav');
-const monthHeader = document.getElementById('month-header');
+const monthLabel = document.getElementById('month-label');
 
 let currentDate;
 let selectedDayOfMonth; // Not zero-based
@@ -37,7 +37,7 @@ currentDateString = `${formattedYear}-${formattedMonth}-${formattedDay}`;
 // Stuff that is updated every time including the first time
 function updateHeadersAndCalendar() {
     dateNav.value = currentDateString;
-    monthHeader.textContent = months[currentMonth];
+    monthLabel.textContent = months[currentMonth];
     calendarElement.dataset.daysInMonth = daysInMonth;
     calendarElement.dataset.startDay = startDay;
 }

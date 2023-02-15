@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="utf-8">
+        <meta name="description" content="Lightweight calendar app for keeping track of monthly bill payments">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Bill Calendar</title>
         <!-- <link rel="manifest" href="/manifest.json"> -->
@@ -25,6 +26,11 @@
                 background-color: khaki;
             }
 
+            #nav-group {
+                display: flex;
+                align-items: center;
+            }
+
             @media screen and (min-width: 600px) {
                 #calendar {
                     display: grid;
@@ -33,12 +39,18 @@
                     row-gap: 3px;
                 }
 
-                #month-header {
-                    display: inline-block;
+                #month-label {
+                    font-size: 24px;
+                    font-weight:bold;
+                }
+
+                #nav-group {
+                    height: 48px;
+                    margin-bottom: 16px;
                 }
 
                 #date-nav {
-                    margin-left: 16px;
+                    margin-left: 24px;
                 }
                 
                 padding-day, calendar-day {
@@ -91,25 +103,29 @@
                 }
             }
 
-            @media screen and (max-device-width: 600px) and (orientation: portrait) {
+            @media screen and (max-device-width: 600px) {
                 body {
                     margin: 0;
                 }
-                #date-nav {
+                #nav-group {
                     position: sticky;
                     top: 0;
                     left: 0;
                     height: 48px;
                     width: 100vw;
+                    background-color: lemonchiffon;
+                }
+                #date-nav {
+                    flex-grow: 1;
                     padding-left: 16px;
                     padding-right: 16px;
                     box-sizing: border-box;
                     border: none;
                     outline: none;
-                    background-color: lemonchiffon;
+                    background-color: inherit;
                 }
-                #month-header {
-                    display: none;
+                #month-label {
+                    margin-left: 16px;
                 }
                 .day-of-week-header {
                     display: none;
@@ -124,7 +140,7 @@
                     position: sticky;
                     bottom: 0;
                     left: 0;
-                    background-color: khaki;
+                    background-color: lemonchiffon;
                     border-right: 3px solid black;
                     border-top: 3px solid black;
                 }
@@ -155,7 +171,7 @@
                 #add-bill-button {
                     border: none;
                     outline: inherit;
-                    background-color: red;
+                    background-color: crimson;
                     color: white;
                     float: right;
                     font-weight: bold;
@@ -189,8 +205,10 @@
             </div>
         </template>
 
-        <h1 id="month-header"></h1>
-        <input type="date" id="date-nav">
+        <div id="nav-group">
+            <label id="month-label" for="date-nav">Month</label>
+            <input type="date" id="date-nav">
+        </div>
         <div id="calendar">
             <div class="day-of-week-header">Sunday</div>
             <div class="day-of-week-header">Monday</div>
