@@ -1,3 +1,6 @@
+import { showAddBillDialog, showBillListDialog } from "./bills.js";
+import { dateForDay } from "./calendar.js";
+
 class CalendarDay extends HTMLElement {
     constructor() {
         super();
@@ -6,6 +9,7 @@ class CalendarDay extends HTMLElement {
 
         const shadowRoot = this.attachShadow({ mode: 'open' });
         shadowRoot.appendChild(templateContent.cloneNode(true));
+        this.dayOfMonth = parseInt(this.getAttribute('day-of-month'), 10);
     }
 
     #updateDayOfMonth() {
@@ -14,8 +18,25 @@ class CalendarDay extends HTMLElement {
         dateContainer.textContent = this.getAttribute('day-of-month');
     }
 
+    #setupEventListeners() {
+        const shadow = this.shadowRoot;
+
+        const addBillButton = shadow.getElementById('add-bill-button');
+        addBillButton.addEventListener('click', () =>
+            showAddBillDialog(dateForDay(this.dayOfMonth)));
+
+        const billList = shadow.getElementById('bill-list');
+        billList.addEventListener('click', () => {
+            const billsCount = 0; // TODO: look it up or get it from the slot
+            if (billsCount > 0) {
+                showBillListDialog();
+            }
+        });
+    }
+
     connectedCallback() {
         this.#updateDayOfMonth();
+        this.#setupEventListeners();
     }
 }
 

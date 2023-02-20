@@ -68,3 +68,7 @@ dateNav.addEventListener('change', e => {
         updateSelectedDay();
     }
 });
+
+export function dateForDay(dayOfMonth) {
+    return new Date(currentYear, currentMonth, dayOfMonth);
+}
