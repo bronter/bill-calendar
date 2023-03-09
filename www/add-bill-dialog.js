@@ -17,6 +17,9 @@ class AddBillDialog extends HTMLElement {
         const shadowRoot = this.shadowRoot;
         this.addBillDate = shadowRoot.getElementById('date');
         this.addBillDialog = shadowRoot.getElementById('dialog');
+        this.recurringCheckbox = shadowRoot.getElementById('recurring');
+        this.recurringCheckbox.addEventListener('change', e => {
+        });
     }
 
     showModal(date) {
