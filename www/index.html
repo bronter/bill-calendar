@@ -8,7 +8,7 @@
         <!-- <link rel="manifest" href="/manifest.json"> -->
         <script>
             if ('serviceWorker' in navigator) {
-                // FIXME: Something wrong with the serviceWorker? It's mpossible to
+                // FIXME: Something wrong with the serviceWorker? It's impossible to
                 // get the stylesheet to update even after clearing the cache.
                 // Could be a browser glitch too (I'm on FF nightly iirc),
                 // should check on Chrome.
@@ -83,30 +83,30 @@
                 #calendar[data-start-day="Sunday"] > padding-day {
                     display: none;
                 }
-                #calendar[data-start-day="Monday"] > padding-day:first-of-type ~ padding-day {
+                #calendar[data-start-day="Monday"] > padding-day:nth-of-type(n+2) {
                     display: none;
                 }
-                #calendar[data-start-day="Tuesday"] > padding-day:nth-of-type(2) ~ padding-day {
+                #calendar[data-start-day="Tuesday"] > padding-day:nth-of-type(n+3) {
                     display: none;
                 }
-                #calendar[data-start-day="Wednesday"] > padding-day:nth-of-type(3) ~ padding-day {
+                #calendar[data-start-day="Wednesday"] > padding-day:nth-of-type(n+4) {
                     display: none;
                 }
-                #calendar[data-start-day="Thursday"] > padding-day:nth-of-type(4) ~ padding-day {
+                #calendar[data-start-day="Thursday"] > padding-day:nth-of-type(n+5) {
                     display: none;
                 }
-                #calendar[data-start-day="Friday"] > padding-day:nth-of-type(5) ~ padding-day {
+                #calendar[data-start-day="Friday"] > padding-day:nth-of-type(n+6) {
                     display: none;
                 }
                 /* No need for Saturday since all padding cells should be visible */
                 
-                #calendar[data-days-in-month="28"] > calendar-day:nth-of-type(28) ~ calendar-day {
+                #calendar[data-days-in-month="28"] > calendar-day:nth-of-type(n+29) {
                     display: none;
                 }
-                #calendar[data-days-in-month="29"] > calendar-day:nth-of-type(29) ~ calendar-day {
+                #calendar[data-days-in-month="29"] > calendar-day:nth-of-type(n+30) {
                     display: none;
                 }
-                #calendar[data-days-in-month="30"] > calendar-day:nth-of-type(30) ~ calendar-day {
+                #calendar[data-days-in-month="30"] > calendar-day:nth-of-type(n+31) {
                     display: none;
                 }
                 
@@ -192,7 +192,7 @@
         -->
         <template id="calendar-day">
             <style>
-                #day-container {
+                :host {
                     height: 100%;
                     background-color: inherit;
                 }
@@ -209,28 +209,33 @@
                 #add-bill-button:active {
                     filter: brightness(80%);
                 }
+                #add-bill-button:not(:active):focus {
+                    border: 2px dashed black;
+                }
                 #day-of-month {
                     padding: 6px;
                     background-color: var(--bg-secondary-color);
                     width: fit-content;
                 }
                 @media screen and (max-device-width: 600px) and (orientation: portrait) {
-                    #day-container {
+                    :host {
                         display: flex;
                         flex-direction: column;
                     }
-                    /* ul {
-                        flex-grow: 1;
-                    } */
+                    #add-bill-button:not(:active):focus {
+                        border: none;
+                    }
                 }
             </style>
-            <div id="day-container">
-                <div id="day-of-month"></div>
-                <ul id="bill-list">
-                    <slot name="bills"></slot>
-                </ul>
-                <button id="add-bill-button">Add Bill</button>
-            </div>
+            <div id="day-of-month"></div>
+            <ul id="bill-list">
+            </ul>
+            <button id="add-bill-button">Add Bill</button>
+        </template>
+
+        <template id="day-bill">
+            <span id="name"></span>
+            <span id="amount"></span>
         </template>
 
         <template id="add-bill-template">
@@ -251,7 +256,7 @@
                     margin: 0;
                     line-height: 32px;
                 }
-                input {
+                input, select {
                     max-width: 128px;
                     float: right;
                 }
@@ -262,9 +267,13 @@
             <dialog id="dialog">
                 <h3 id="date"></h3>
                 <form id="bill-form" method="dialog">
+                    <label>Name <input type="text" id="name" required></label>
                     <label>Amount <input type="number" min="0" id="amount" required></label>
-                    <label>Recurring? <input type="checkbox" id="recurring"></label>
-                    <button type="submit" id="add-button">Add</button>
+                    <label>Type <select id="type">
+                        <option value="non-recurring" selected>Non-Recurring</option>
+                    </select></label>
+                    <button id="add-button" value="submit">Add</button>
+                    <button id="cancel-button" value="cancel" formnovalidate>Cancel</button>
                 </form>
             </dialog>
         </template>
@@ -276,6 +285,8 @@
             <input type="date" id="date-nav">
         </div>
         <div id="calendar">
+            <!-- TODO: figure out a way to do i18n on these -->
+            <!-- Will probably have to default to English and then have some JS update it once the page loads -->
             <div class="day-of-week-header">Sunday</div>
             <div class="day-of-week-header">Monday</div>
             <div class="day-of-week-header">Tuesday</div>

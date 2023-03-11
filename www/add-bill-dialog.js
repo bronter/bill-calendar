@@ -17,8 +17,22 @@ class AddBillDialog extends HTMLElement {
         const shadowRoot = this.shadowRoot;
         this.addBillDate = shadowRoot.getElementById('date');
         this.addBillDialog = shadowRoot.getElementById('dialog');
-        this.recurringCheckbox = shadowRoot.getElementById('recurring');
-        this.recurringCheckbox.addEventListener('change', e => {
+        this.billForm = shadowRoot.getElementById('bill-form');
+        this.addBillDialog.addEventListener("close", () => this.billForm.reset());
+        this.amount = shadowRoot.getElementById('amount');
+        this.name = shadowRoot.getElementById('name');
+        this.type = shadowRoot.getElementById('type');
+        this.billForm.addEventListener('submit', e => {
+            if (e.submitter.value === "cancel") return;
+
+            const detail = {
+                amount: this.amount.value,
+                name: this.name.value,
+                startDate: this.billDate,
+                type: this.type.selectedOptions[0]?.value
+            };
+            const newEvent = new CustomEvent('submit', { detail });
+            this.dispatchEvent(newEvent);
         });
     }
 

@@ -1,6 +1,28 @@
 import { showAddBillDialog, showBillListDialog } from "./bills.js";
 import { dateForDay } from "./calendar.js";
 
+class DayBill extends HTMLElement {
+    constructor() {
+        super();
+        const template = document.getElementById('day-bill');
+        const templateContent = template.content;
+
+        const shadowRoot = this.attachShadow({ mode: 'open' });
+        shadowRoot.appendChild(templateContent.cloneNode(true));
+    }
+
+    connectedCallback() {
+        const shadowRoot = this.shadowRoot;
+        this.name = shadowRoot.getElementById('name');
+        this.amount = shadowRoot.getElementById('amount');
+
+        this.name.textContent = this.getAttribute('name');
+        this.amount.textContent = this.getAttribute('amount');
+    }
+}
+
+customElements.define('day-bill', DayBill);
+
 class CalendarDay extends HTMLElement {
     constructor() {
         super();
@@ -25,8 +47,7 @@ class CalendarDay extends HTMLElement {
         addBillButton.addEventListener('click', () =>
             showAddBillDialog(dateForDay(this.dayOfMonth)));
 
-        const billList = shadow.getElementById('bill-list');
-        billList.addEventListener('click', () => {
+        this.billList.addEventListener('click', () => {
             const billsCount = 0; // TODO: look it up or get it from the slot
             if (billsCount > 0) {
                 showBillListDialog();
@@ -35,8 +56,22 @@ class CalendarDay extends HTMLElement {
     }
 
     connectedCallback() {
+        this.billList = this.shadowRoot.getElementById('bill-list');
         this.#updateDayOfMonth();
         this.#setupEventListeners();
+    }
+
+    // TODO: Ideally this would do some diffing and only update what it needs to;
+    // in most cases only one bill would change at a time and the rest would remain untouched.
+    set bills(billsList) {
+        const newBills = [];
+        for (const bill of billsList) {
+            const newBill = document.createElement('day-bill');
+            newBill.setAttribute('name', bill.name);
+            newBill.setAttribute('amount', bill.amount);
+            newBills.push(newBill);
+        }
+        this.billList.replaceChildren(...newBills);
     }
 }
 

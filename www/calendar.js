@@ -72,3 +72,8 @@ dateNav.addEventListener('change', e => {
 export function dateForDay(dayOfMonth) {
     return new Date(currentYear, currentMonth, dayOfMonth);
 }
+
+export function setBillsForDay(date, bills) {
+    const dayOfMonth = date.getDate();
+    calendarDayNodeList.item(dayOfMonth - 1).bills = bills;
+}
