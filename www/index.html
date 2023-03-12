@@ -110,6 +110,7 @@
             }
         </style>
         <!-- It looks like modulepreload is standard now but still not supported in Firefox and Safari? -->
+        <link rel="modulepreload" href="templated-element.js">
         <link rel="modulepreload" href="bills.js">
         <script type="module" src="calendar-day.js"></script>
         <script type="module" src="calendar.js"></script>
@@ -131,6 +132,8 @@
                     height: 100%;
                     background-color: inherit;
                 }
+
+                /* FIXME: This button doesn't anchor to the bottom of the cell in desktop view */
                 #add-bill-button {
                     border: none;
                     outline: inherit;

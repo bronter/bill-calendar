@@ -1,18 +1,11 @@
+import TemplatedElement from "./templated-element";
 // Not i18n friendly but that's more work for later
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const yyyymmLength = 'yyyy-mm'.length;
 
-class BillCalendar extends HTMLElement {
-    constructor() {
-        super();
-
-        const template = document.getElementById('bill-calendar');
-        const templateContent = template.content;
-
-        const shadowRoot = this.attachShadow({ mode: 'open' });
-        shadowRoot.appendChild(templateContent.cloneNode(true));
-    }
+class BillCalendar extends TemplatedElement {
+    static templateId = 'bill-calendar';
 
     connectedCallback() {
         const shadowRoot = this.shadowRoot;

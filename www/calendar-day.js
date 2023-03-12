@@ -1,15 +1,9 @@
+import TemplatedElement from "./templated-element.js";
 import { showAddBillDialog, showBillListDialog } from "./bills.js";
 import { dateForDay } from "./calendar.js";
 
-class DayBill extends HTMLElement {
-    constructor() {
-        super();
-        const template = document.getElementById('day-bill');
-        const templateContent = template.content;
-
-        const shadowRoot = this.attachShadow({ mode: 'open' });
-        shadowRoot.appendChild(templateContent.cloneNode(true));
-    }
+class DayBill extends TemplatedElement {
+    static templateId = 'day-bill';
 
     connectedCallback() {
         const shadowRoot = this.shadowRoot;
@@ -23,14 +17,11 @@ class DayBill extends HTMLElement {
 
 customElements.define('day-bill', DayBill);
 
-class CalendarDay extends HTMLElement {
+class CalendarDay extends TemplatedElement {
+    static templateId = 'calendar-day';
     constructor() {
         super();
-        const template = document.getElementById('calendar-day');
-        const templateContent = template.content;
 
-        const shadowRoot = this.attachShadow({ mode: 'open' });
-        shadowRoot.appendChild(templateContent.cloneNode(true));
         this.dayOfMonth = parseInt(this.getAttribute('day-of-month'), 10);
     }
 

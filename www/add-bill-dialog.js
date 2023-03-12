@@ -1,17 +1,10 @@
-class AddBillDialog extends HTMLElement {
+import TemplatedElement from "./templated-element";
+
+class AddBillDialog extends TemplatedElement {
+    static templateId = 'add-bill-template';
     static #headerDateFormatOptions = {
         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
     };
-
-    constructor() {
-        super();
-
-        const template = document.getElementById('add-bill-template');
-        const templateContent = template.content;
-
-        const shadowRoot = this.attachShadow({ mode: 'open' });
-        shadowRoot.appendChild(templateContent.cloneNode(true));
-    }
 
     connectedCallback() {
         const shadowRoot = this.shadowRoot;
