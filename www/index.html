@@ -41,23 +41,12 @@
                 color: var(--red-ink-color);
             }
 
-            .current-day {
-                background-color: var(--highlight-color);
-            }
-
             #nav-group {
                 display: flex;
                 align-items: center;
             }
 
             @media screen and (min-width: 600px) {
-                #calendar {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-                    column-gap: 3px;
-                    row-gap: 3px;
-                }
-
                 #month-label {
                     font-size: 24px;
                     font-weight:bold;
@@ -70,51 +59,6 @@
 
                 #date-nav {
                     margin-left: 24px;
-                }
-                
-                padding-day, calendar-day {
-                    background-color: var(--bg-primary-color);
-                }
-                
-                padding-day {
-                    opacity: 0;
-                }
-                
-                #calendar[data-start-day="Sunday"] > padding-day {
-                    display: none;
-                }
-                #calendar[data-start-day="Monday"] > padding-day:nth-of-type(n+2) {
-                    display: none;
-                }
-                #calendar[data-start-day="Tuesday"] > padding-day:nth-of-type(n+3) {
-                    display: none;
-                }
-                #calendar[data-start-day="Wednesday"] > padding-day:nth-of-type(n+4) {
-                    display: none;
-                }
-                #calendar[data-start-day="Thursday"] > padding-day:nth-of-type(n+5) {
-                    display: none;
-                }
-                #calendar[data-start-day="Friday"] > padding-day:nth-of-type(n+6) {
-                    display: none;
-                }
-                /* No need for Saturday since all padding cells should be visible */
-                
-                #calendar[data-days-in-month="28"] > calendar-day:nth-of-type(n+29) {
-                    display: none;
-                }
-                #calendar[data-days-in-month="29"] > calendar-day:nth-of-type(n+30) {
-                    display: none;
-                }
-                #calendar[data-days-in-month="30"] > calendar-day:nth-of-type(n+31) {
-                    display: none;
-                }
-                
-                .day-of-week-header {
-                    text-align: center;
-                    padding-top: 4px;
-                    padding-bottom: 4px;
-                    background-color: var(--header-color);
                 }
             }
 
@@ -150,15 +94,6 @@
                 }
                 #month-label {
                     margin-left: 16px;
-                }
-                .day-of-week-header {
-                    display: none;
-                }
-                padding-day {
-                    display: none;
-                }
-                calendar-day {
-                    background-color: var(--bg-primary-color);
                 }
                 #totals {
                     position: fixed;
@@ -284,7 +219,81 @@
             <label id="month-label" for="date-nav">Month</label>
             <input type="date" id="date-nav">
         </div>
-        <div id="calendar">
+        <template id="bill-calendar">
+            <style>
+                :host {
+                    display: block;
+                }
+                .current-day {
+                    background-color: var(--highlight-color);
+                }
+
+                @media screen and (min-width: 600px) {
+                    :host {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+                        column-gap: 3px;
+                        row-gap: 3px;
+                    }
+
+                    padding-day, calendar-day {
+                        background-color: var(--bg-primary-color);
+                    }
+
+                    padding-day {
+                        opacity: 0;
+                    }
+
+                    :host[start-day="Sunday"] > padding-day {
+                        display: none;
+                    }
+                    :host[start-day="Monday"] > padding-day:nth-of-type(n+2) {
+                        display: none;
+                    }
+                    :host[start-day="Tuesday"] > padding-day:nth-of-type(n+3) {
+                        display: none;
+                    }
+                    :host[start-day="Wednesday"] > padding-day:nth-of-type(n+4) {
+                        display: none;
+                    }
+                    :host[start-day="Thursday"] > padding-day:nth-of-type(n+5) {
+                        display: none;
+                    }
+                    :host[start-day="Friday"] > padding-day:nth-of-type(n+6) {
+                        display: none;
+                    }
+                    /* No need for Saturday since all padding cells should be visible */
+                    
+                    :host[days-in-month="28"] > calendar-day:nth-of-type(n+29) {
+                        display: none;
+                    }
+                    :host[days-in-month="29"] > calendar-day:nth-of-type(n+30) {
+                        display: none;
+                    }
+                    :host[days-in-month="30"] > calendar-day:nth-of-type(n+31) {
+                        display: none;
+                    }
+                    
+                    .day-of-week-header {
+                        text-align: center;
+                        padding-top: 4px;
+                        padding-bottom: 4px;
+                        background-color: var(--header-color);
+                    }
+                }
+
+                @media screen and (max-device-width: 600px) {
+                    .day-of-week-header {
+                        display: none;
+                    }
+                    padding-day {
+                        display: none;
+                    }
+                    calendar-day {
+                        background-color: var(--bg-primary-color);
+                    }
+                }
+            </style>
             <!-- TODO: figure out a way to do i18n on these -->
             <!-- Will probably have to default to English and then have some JS update it once the page loads -->
             <div class="day-of-week-header">Sunday</div>
@@ -331,7 +340,9 @@
             <calendar-day day-of-month="29"></calendar-day>
             <calendar-day day-of-month="30"></calendar-day>
             <calendar-day day-of-month="31"></calendar-day>
-        </div>
+        </template>
+
+        <bill-calendar id="calendar"></bill-calendar>
         <table id="totals">
             <tr>
                 <td>Total Due: </td>

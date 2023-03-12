@@ -3,8 +3,46 @@ const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const yyyymmLength = 'yyyy-mm'.length;
 
+class BillCalendar extends HTMLElement {
+    constructor() {
+        super();
+
+        const template = document.getElementById('bill-calendar');
+        const templateContent = template.content;
+
+        const shadowRoot = this.attachShadow({ mode: 'open' });
+        shadowRoot.appendChild(templateContent.cloneNode(true));
+    }
+
+    connectedCallback() {
+        const shadowRoot = this.shadowRoot;
+        this.calendarDayNodeList = this.shadowRoot.querySelectorAll('calendar-day');
+        const selectedDay = this.getAttribute('selected-day');
+        if (selectedDay) {
+            this.calendarDayNodeList.item(selectedDay - 1).classList.add('current-day');
+        }
+    }
+
+    static get observedAttributes() {
+        return ['selected-day'];
+    }
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (name === 'selected-day') {
+            if (oldValue) {
+                this.calendarDayNodeList.item(parseInt(oldValue, 10) - 1).classList.remove('current-day');
+            }
+            this.calendarDayNodeList.item(parseInt(newValue, 10) - 1).classList.add('current-day');
+        }
+    }
+
+    setBillsForDay(dayOfMonth, bills) {
+        this.calendarDayNodeList.item(dayOfMonth - 1).bills = bills;
+    }
+}
+
+customElements.define('bill-calendar', BillCalendar);
+
 const calendarElement = document.getElementById('calendar');
-const calendarDayNodeList = document.getElementsByTagName('calendar-day');
 const dateNav = document.getElementById('date-nav');
 const monthLabel = document.getElementById('month-label');
 
@@ -27,8 +65,6 @@ function afterDateUpdateData(newDate, dateString) {
 }
 afterDateUpdateData(new Date());
 
-let selectedDayElement = calendarDayNodeList.item(selectedDayOfMonth - 1);
-
 const formattedYear = String(currentYear).padStart(4, '0');
 const formattedMonth = String(currentMonth + 1).padStart(2, '0');
 const formattedDay = String(selectedDayOfMonth).padStart(2, '0');
@@ -38,17 +74,11 @@ currentDateString = `${formattedYear}-${formattedMonth}-${formattedDay}`;
 function updateHeadersAndCalendar() {
     dateNav.value = currentDateString;
     monthLabel.textContent = months[currentMonth];
-    calendarElement.dataset.daysInMonth = daysInMonth;
-    calendarElement.dataset.startDay = startDay;
+    calendarElement.setAttribute('days-in-month', daysInMonth);
+    calendarElement.setAttribute('start-day', startDay);
 }
 updateHeadersAndCalendar();
-selectedDayElement.classList.toggle('current-day', true);
-
-function updateSelectedDay() {
-    selectedDayElement.classList.remove('current-day');
-    selectedDayElement = calendarDayNodeList.item(selectedDayOfMonth - 1);
-    selectedDayElement.classList.add('current-day');
-}
+calendarElement.setAttribute('selected-day', selectedDayOfMonth);
 
 dateNav.addEventListener('change', e => {
     // date string is always in the format yyyy-mm-dd
@@ -62,10 +92,10 @@ dateNav.addEventListener('change', e => {
         const newDate = new Date(`${dateStr}T00:00:00`);
         afterDateUpdateData(newDate, dateStr);
         updateHeadersAndCalendar();
-        updateSelectedDay();
+        calendarElement.setAttribute('selected-day', selectedDayOfMonth);
     } else if (newSelectedDayOfMonth !== selectedDayOfMonth) {
         selectedDayOfMonth = newSelectedDayOfMonth;
-        updateSelectedDay();
+        calendarElement.setAttribute('selected-day', selectedDayOfMonth);
     }
 });
 
@@ -74,6 +104,5 @@ export function dateForDay(dayOfMonth) {
 }
 
 export function setBillsForDay(date, bills) {
-    const dayOfMonth = date.getDate();
-    calendarDayNodeList.item(dayOfMonth - 1).bills = bills;
+    calendarElement.setBillsForDay(date.getDate(), bills);
 }
