@@ -10,7 +10,7 @@ I certainly could add in a bunch of tooling, and it would allow things like inde
 but the idea here is to build something using only the features the browser provides.
 
 ## Running the app
-To run the app locally you need a http server and a web browser.
+To run the app locally you need a http server and a web browser (preferably a very recent version of Firefox, Safari, or Chrome, or a fork of one of those).
 If you have Python you could do
 
 ```cd www && python3 -m http.server```
