@@ -88,7 +88,12 @@ class Bill {
 //       no more than 6 months into the future OR an end date within a year of the current date.
 //       I kind of doubt there'd be much of a delay in querying the bills from a local database,
 //       but if it becomes an issue a LRU cache could help speed things along.
-const bills = [];
+let bills = [];
+
+// For testing
+export function resetForTest() {
+    bills = [];
+}
 
 export function newBill(amount, name, startDate, type) {
     const bill = new Bill(name, amount, startDate, null, type);
