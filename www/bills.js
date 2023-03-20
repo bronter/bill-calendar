@@ -1,4 +1,5 @@
 class RecurringPeriod {
+    static type = 'recurring';
     // startDate should be a Date object
     constructor(startDate, endDate=null) {
         this.startDate = startDate;
@@ -11,6 +12,7 @@ class RecurringPeriod {
 }
 
 class NonRecurring extends RecurringPeriod {
+    static type = 'non-recurring';
     billingDatesInMonth(month, year) {
         const startMonth = this.startDate.getMonth();
         const startYear = this.startDate.getFullYear();
@@ -23,6 +25,7 @@ class NonRecurring extends RecurringPeriod {
 }
 
 class Monthly extends RecurringPeriod {
+    static type = 'monthly';
     billingDatesInMonth(month, year) {
         // If the date is past this bill's end date return nothing
         if (this.endDate && this.endDate.getTime() < Date.UTC(year, month)) {
@@ -46,6 +49,7 @@ class Monthly extends RecurringPeriod {
 }
 
 class Annual extends RecurringPeriod {
+    static type = 'annual';
     billingDatesInMonth(month, year) {
         if (year >= this.startDate.getFullYear()) {
             const newDate = new Date(this.startDate);
