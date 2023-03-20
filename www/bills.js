@@ -66,7 +66,9 @@ class Bill {
     constructor(name, amount, startDate, endDate=null, type='non-recurring') {
         // Maybe export the type names so the UI can use them
         const recurringTypesMap = {
-            'non-recurring': NonRecurring
+            'non-recurring': NonRecurring,
+            'monthly': Monthly,
+            'annual': Annual,
         };
         const RP = recurringTypesMap[type];
         this.recurringPeriod = new RP(startDate);
