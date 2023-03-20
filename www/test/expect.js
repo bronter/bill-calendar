@@ -10,9 +10,9 @@ class Expectation {
         return this;
     }
 
-    toFail() {
+    toFail(message) {
         if (!this.#not) {
-            throw new Error("Failed as expected");
+            throw new Error(message ?? "Failed as expected");
         }
     }
 

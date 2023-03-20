@@ -13,6 +13,23 @@ run('expect tests', test => {
         }
     });
 
+    test('toFail with message', expect => {
+        let threwError = false;
+        let message;
+        try {
+            expect().toFail('foo');
+        } catch (e) {
+            threwError = true;
+            message = e.message;
+        }
+        if (!threwError) {
+            throw new Error('Expected toFail to still throw an error when given a message');
+        }
+        if (message !== 'foo') {
+            throw new Error('Expected message passed to toFail to appear in error message');
+        }
+    })
+
     test('not', expect => {
         expect().not.toFail();
         let threwError = false;
