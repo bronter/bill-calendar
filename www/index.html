@@ -250,33 +250,33 @@
                         opacity: 0;
                     }
 
-                    :host[start-day="Sunday"] > padding-day {
+                    :host([start-day="Sunday"]) > padding-day {
                         display: none;
                     }
-                    :host[start-day="Monday"] > padding-day:nth-of-type(n+2) {
+                    :host([start-day="Monday"]) > padding-day:nth-of-type(n+2) {
                         display: none;
                     }
-                    :host[start-day="Tuesday"] > padding-day:nth-of-type(n+3) {
+                    :host([start-day="Tuesday"]) > padding-day:nth-of-type(n+3) {
                         display: none;
                     }
-                    :host[start-day="Wednesday"] > padding-day:nth-of-type(n+4) {
+                    :host([start-day="Wednesday"]) > padding-day:nth-of-type(n+4) {
                         display: none;
                     }
-                    :host[start-day="Thursday"] > padding-day:nth-of-type(n+5) {
+                    :host([start-day="Thursday"]) > padding-day:nth-of-type(n+5) {
                         display: none;
                     }
-                    :host[start-day="Friday"] > padding-day:nth-of-type(n+6) {
+                    :host([start-day="Friday"]) > padding-day:nth-of-type(n+6) {
                         display: none;
                     }
                     /* No need for Saturday since all padding cells should be visible */
                     
-                    :host[days-in-month="28"] > calendar-day:nth-of-type(n+29) {
+                    :host([days-in-month="28"]) > calendar-day:nth-of-type(n+29) {
                         display: none;
                     }
-                    :host[days-in-month="29"] > calendar-day:nth-of-type(n+30) {
+                    :host([days-in-month="29"]) > calendar-day:nth-of-type(n+30) {
                         display: none;
                     }
-                    :host[days-in-month="30"] > calendar-day:nth-of-type(n+31) {
+                    :host([days-in-month="30"]) > calendar-day:nth-of-type(n+31) {
                         display: none;
                     }
                     
