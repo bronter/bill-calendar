@@ -110,10 +110,12 @@
             }
         </style>
         <!-- It looks like modulepreload is standard now but still not supported in Firefox and Safari? -->
+        <!-- Looks like it was recently merged into WebKit so maybe Safari support soon, no news on FF...-->
         <link rel="modulepreload" href="templated-element.js">
         <link rel="modulepreload" href="bills.js">
         <script type="module" src="calendar-day.js"></script>
-        <script type="module" src="calendar.js"></script>
+        <script type="module" src="bill-calendar.js"></script>
+        <script type="module" src="ui-main.js"></script>
         <script type="module" src="add-bill-dialog.js"></script>
     </head>
     <body>

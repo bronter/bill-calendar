@@ -1,9 +1,8 @@
-import { setBillsForDay } from "./calendar.js";
-
 class RecurringPeriod {
     // startDate should be a Date object
-    constructor(startDate) {
+    constructor(startDate, endDate=null) {
         this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     billingDatesInMonth(month, year) {
@@ -25,6 +24,10 @@ class NonRecurring extends RecurringPeriod {
 
 class Monthly extends RecurringPeriod {
     billingDatesInMonth(month, year) {
+        // If the date is past this bill's end date return nothing
+        if (this.endDate && this.endDate.getTime() < Date.UTC(year, month)) {
+            return []; // I don't like the repeated code here, need to figure out how to invert the if statement
+        }
         const startYear = this.startDate.getFullYear();
         const startMonth = this.startDate.getMonth();
         if (year > startYear || (year === startYear && month >= startMonth)) {
@@ -56,37 +59,53 @@ class Annual extends RecurringPeriod {
 }
 
 class Bill {
-    constructor(name, amount, startDate, type='non-recurring') {
+    constructor(name, amount, startDate, endDate=null, type='non-recurring') {
         // Maybe export the type names so the UI can use them
         const recurringTypesMap = {
             'non-recurring': NonRecurring
         };
         const RP = recurringTypesMap[type];
         this.recurringPeriod = new RP(startDate);
+        if (endDate) {
+            this.recurringPeriod.endDate = endDate;
+        }
         this.name = name;
         this.amount = amount;
+
+        // Big random number to minimise possibility of collision
+        const randNum = Math.random().toString().slice(2);
+        this.id = `${startDate.getTime()}-${name}-${randNum}`;
+    }
+
+    endBill(endDate) {
+        this.recurringPeriod.endDate = endDate;
     }
 }
 
-// Maybe structure like {
-//    "isoStartDate": [...bills]
-//}
-const bills = {};
+// TODO: Consider putting the bills into a database indexed by start date and end date
+//       so that we don't have to load every bill ever into memory immediately upon startup.
+//       We could start by loading every bill that has EITHER no end date and a start date
+//       no more than 6 months into the future OR an end date within a year of the current date.
+//       I kind of doubt there'd be much of a delay in querying the bills from a local database,
+//       but if it becomes an issue a LRU cache could help speed things along.
+const bills = [];
 
-const addBillDialog = document.getElementById('add-bill-dialog');
-const billListDialog = document.getElementById('bill-list-dialog');
-
-addBillDialog.addEventListener('submit', e => {
-    const {amount, name, startDate, type} = e.detail;
-    const startDateStr = startDate.toISOString();
-    bills[startDateStr] ??= [];
-    bills[startDateStr].push(new Bill(name, amount, startDate, type));
-    setBillsForDay(startDate, bills[startDateStr]);
-});
-export function showAddBillDialog(date) {
-    addBillDialog.showModal(date);
+export function newBill(amount, name, startDate, type) {
+    const bill = new Bill(name, amount, startDate, null, type);
+    bills.push(bill);
+    return bill;
 }
 
-export function showBillListDialog() {
-    billListDialog.showModal();
+export function billsForMonth(month, year) {
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const billsThisMonth = [];
+    for (let i = 0; i < daysInMonth; ++i) billsThisMonth.push([]);
+    for (const bill of bills) {
+        const billingDates = bill.recurringPeriod.billingDatesInMonth(month, year);
+        for (const day of billingDates) {
+            billsThisMonth[day - 1].push(bill);
+        }
+    }
+
+    return billsThisMonth;
 }

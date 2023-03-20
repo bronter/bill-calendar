@@ -1,6 +1,7 @@
 import TemplatedElement from "./templated-element.js";
-import { showAddBillDialog, showBillListDialog } from "./bills.js";
-import { dateForDay } from "./calendar.js";
+
+const addBillDialog = document.getElementById('add-bill-dialog');
+const billListDialog = document.getElementById('bill-list-dialog');
 
 class DayBill extends TemplatedElement {
     static templateId = 'day-bill';
@@ -36,12 +37,12 @@ class CalendarDay extends TemplatedElement {
 
         const addBillButton = shadow.getElementById('add-bill-button');
         addBillButton.addEventListener('click', () =>
-            showAddBillDialog(dateForDay(this.dayOfMonth)));
+            addBillDialog.showModal(this.dayOfMonth));
 
         this.billList.addEventListener('click', () => {
             const billsCount = 0; // TODO: look it up or get it from the slot
             if (billsCount > 0) {
-                showBillListDialog();
+                billListDialog.showModal();
             }
         });
     }
@@ -52,17 +53,38 @@ class CalendarDay extends TemplatedElement {
         this.#setupEventListeners();
     }
 
-    // TODO: Ideally this would do some diffing and only update what it needs to;
-    // in most cases only one bill would change at a time and the rest would remain untouched.
+    #makeDayBill(bill) {
+        const newBill = document.createElement('day-bill');
+        newBill.setAttribute('id', bill.id);
+        newBill.setAttribute('name', bill.name);
+        newBill.setAttribute('amount', bill.amount);
+        return newBill;
+    }
+
+    // Setting all bills like this should only be used when loading up a new month
+    // For adding a bill to a day or removing one, we have addBill() and removeBill()
     set bills(billsList) {
         const newBills = [];
         for (const bill of billsList) {
-            const newBill = document.createElement('day-bill');
-            newBill.setAttribute('name', bill.name);
-            newBill.setAttribute('amount', bill.amount);
+            const newBill = this.#makeDayBill(bill);
             newBills.push(newBill);
         }
-        this.billList.replaceChildren(...newBills);
+        if (this.billList.children.length > 0 || newBills.length > 0) {
+            this.billList.replaceChildren(...newBills);
+        }
+    }
+
+    get bills() {
+        return [];
+    }
+
+    addBill(bill) {
+        const newBill = this.#makeDayBill(bill);
+        this.billList.appendChild(newBill);
+    }
+    removeBill(bill) {
+        const toRemove = this.shadowRoot.getElementById(bill.id);
+        this.billList.removeChild(toRemove);
     }
 }
 

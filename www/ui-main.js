@@ -1,43 +1,18 @@
-import TemplatedElement from "./templated-element";
+import { billsForMonth, newBill } from "./bills.js";
+
+// Make sure the calendar element is loaded before we try to manipulate it
+import './bill-calendar.js';
+
 // Not i18n friendly but that's more work for later
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const yyyymmLength = 'yyyy-mm'.length;
 
-class BillCalendar extends TemplatedElement {
-    static templateId = 'bill-calendar';
-
-    connectedCallback() {
-        const shadowRoot = this.shadowRoot;
-        this.calendarDayNodeList = this.shadowRoot.querySelectorAll('calendar-day');
-        const selectedDay = this.getAttribute('selected-day');
-        if (selectedDay) {
-            this.calendarDayNodeList.item(selectedDay - 1).classList.add('current-day');
-        }
-    }
-
-    static get observedAttributes() {
-        return ['selected-day'];
-    }
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (name === 'selected-day') {
-            if (oldValue) {
-                this.calendarDayNodeList.item(parseInt(oldValue, 10) - 1).classList.remove('current-day');
-            }
-            this.calendarDayNodeList.item(parseInt(newValue, 10) - 1).classList.add('current-day');
-        }
-    }
-
-    setBillsForDay(dayOfMonth, bills) {
-        this.calendarDayNodeList.item(dayOfMonth - 1).bills = bills;
-    }
-}
-
-customElements.define('bill-calendar', BillCalendar);
-
 const calendarElement = document.getElementById('calendar');
 const dateNav = document.getElementById('date-nav');
 const monthLabel = document.getElementById('month-label');
+
+const addBillDialog = document.getElementById('add-bill-dialog');
 
 let currentDate;
 let selectedDayOfMonth; // Not zero-based
@@ -69,6 +44,7 @@ function updateHeadersAndCalendar() {
     monthLabel.textContent = months[currentMonth];
     calendarElement.setAttribute('days-in-month', daysInMonth);
     calendarElement.setAttribute('start-day', startDay);
+    calendarElement.setBills(billsForMonth(currentMonth, currentYear));
 }
 updateHeadersAndCalendar();
 calendarElement.setAttribute('selected-day', selectedDayOfMonth);
@@ -78,7 +54,6 @@ dateNav.addEventListener('change', e => {
     const dateStr = e.target.value;
 
     const newSelectedDayOfMonth = parseInt(dateStr.substring(yyyymmLength + 1), 10);
-    
     if (dateStr.substring(0, yyyymmLength) !== currentDateString.substring(0, yyyymmLength)) {
         // Giving the Date constructor a time with no timezone makes it use the local timezone
         // It shouldn't matter what the time is since we don't use that info, so I set it to midnight.
@@ -96,6 +71,8 @@ export function dateForDay(dayOfMonth) {
     return new Date(currentYear, currentMonth, dayOfMonth);
 }
 
-export function setBillsForDay(date, bills) {
-    calendarElement.setBillsForDay(date.getDate(), bills);
-}
+addBillDialog.addEventListener('submit', e => {
+    const {amount, name, startDate, type} = e.detail;
+    const bill = newBill(amount, name, startDate, type);
+    calendarElement.addBillToDay(startDate.getDate(), bill);
+});

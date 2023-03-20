@@ -1,4 +1,5 @@
-import TemplatedElement from "./templated-element";
+import TemplatedElement from "./templated-element.js";
+import { dateForDay } from "./ui-main.js";
 
 class AddBillDialog extends TemplatedElement {
     static templateId = 'add-bill-template';
@@ -29,7 +30,8 @@ class AddBillDialog extends TemplatedElement {
         });
     }
 
-    showModal(date) {
+    showModal(day) {
+        const date = dateForDay(day);
         this.billDate = date;
         const addBillDate = date.toLocaleDateString(undefined, AddBillDialog.#headerDateFormatOptions);
         this.addBillDate.textContent = addBillDate;
