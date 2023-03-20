@@ -1,3 +1,4 @@
+* Persist data across page loads
 * Update calendar at midnight
 * handle recurring payments with multiple types of periods
 * * daily
