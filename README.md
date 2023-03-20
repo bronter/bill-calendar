@@ -12,12 +12,16 @@ but the idea here is to build something using only the features the browser prov
 ## Running the app
 To run the app locally you need a http server and a web browser.
 If you have Python you could do
+
 ```cd www && python3 -m http.server```
+
 or if you have Node.js maybe
+
 ```cd www && npx http-server```
+
 Then open the app in your browser using the url of the server you set up; probably `localhost:8080`
 
 ## Running tests
 The app has a (very) basic test framework that runs in-browser.
-To run tests, first start your http server as described in [Running the app](#running-the-app)
+To run tests, first start your http server as described in [Running the app](#running-the-app).
 Then, navigate to `<base URL>/test` (so probably `localhost:8080/test`)
