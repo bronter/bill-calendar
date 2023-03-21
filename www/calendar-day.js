@@ -54,11 +54,13 @@ class CalendarDay extends TemplatedElement {
     }
 
     #makeDayBill(bill) {
+        const listElement = document.createElement('li');
         const newBill = document.createElement('day-bill');
         newBill.setAttribute('id', bill.id);
         newBill.setAttribute('name', bill.name);
         newBill.setAttribute('amount', bill.amount);
-        return newBill;
+        listElement.appendChild(newBill);
+        return listElement;
     }
 
     // Setting all bills like this should only be used when loading up a new month

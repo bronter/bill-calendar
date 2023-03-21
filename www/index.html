@@ -62,7 +62,7 @@
                 }
             }
 
-            @media screen and (max-device-width: 600px) {
+            @media screen and (max-width: 600px) {
                 body {
                     margin: 0;
                 }
@@ -80,6 +80,7 @@
                     left: 0;
                     height: 48px;
                     width: 100vw;
+                    z-index: 1;
                     background-color: var(--header-color);
                 }
                 #date-nav {
@@ -131,17 +132,25 @@
         <template id="calendar-day">
             <style>
                 :host {
+                    position: relative;
                     height: 100%;
                     background-color: inherit;
                 }
+                
+                #bill-list-container {
+                    overflow-y: auto;
+                    height: 64px;
+                    margin-bottom: 16px;
+                }
 
-                /* FIXME: This button doesn't anchor to the bottom of the cell in desktop view */
                 #add-bill-button {
+                    position: absolute;
+                    bottom: 0;
+                    right: 0;
                     border: none;
                     outline: inherit;
                     background-color: crimson;
                     color: white;
-                    float: right;
                     font-weight: bold;
                     padding: 8px 16px;
                     cursor: pointer;
@@ -157,10 +166,19 @@
                     background-color: var(--bg-secondary-color);
                     width: fit-content;
                 }
-                @media screen and (max-device-width: 600px) and (orientation: portrait) {
+                @media screen and (max-width: 600px) {
                     :host {
                         display: flex;
                         flex-direction: column;
+                    }
+                    #bill-list-container {
+                        height: 80px;
+                        margin-bottom: 0;
+                    }
+                    #add-bill-button {
+                        position: initial;
+                        right: initial;
+                        bottom: initial;
                     }
                     #add-bill-button:not(:active):focus {
                         border: none;
@@ -168,8 +186,10 @@
                 }
             </style>
             <div id="day-of-month"></div>
-            <ul id="bill-list">
-            </ul>
+            <div id="bill-list-container">
+                <ul id="bill-list">
+                </ul>
+            </div>
             <button id="add-bill-button">Add Bill</button>
         </template>
 
@@ -288,7 +308,7 @@
                     }
                 }
 
-                @media screen and (max-device-width: 600px) {
+                @media screen and (max-width: 600px) {
                     .day-of-week-header {
                         display: none;
                     }
@@ -352,16 +372,16 @@
         <table id="totals">
             <tr>
                 <td>Total Due: </td>
-                <td>$1000</td>
+                <td id="total-due">$1000</td>
             </tr>
             <tr>
                 <td>Total Past Due:</td>
                 <!-- Set the past-due class when amount is non-zero-->
-                <td class="past-due">$8</td>
+                <td id="total-past-due" class="past-due">$8</td>
             </tr>
             <tr>
                 <td>Total Paid:</td>
-                <td>$1000</td>
+                <td id="total-paid">$1000</td>
             </tr>
         </table>
     </body>

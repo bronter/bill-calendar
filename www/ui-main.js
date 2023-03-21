@@ -14,6 +14,10 @@ const monthLabel = document.getElementById('month-label');
 
 const addBillDialog = document.getElementById('add-bill-dialog');
 
+const totalDueElement = document.getElementById('total-due');
+const totalPastDueElement = document.getElementById('total-past-due');
+const totalPaidElement = document.getElementById('total-paid');
+
 let currentDate;
 let selectedDayOfMonth; // Not zero-based
 let currentYear;
@@ -21,6 +25,10 @@ let currentMonth;
 let currentDateString;
 let daysInMonth;
 let startDay;
+
+let totalDue = 0;
+let totalPastDue = 0;
+let totalPaid = 0;
 
 function afterDateUpdateData(newDate, dateString) {
     currentDate = newDate;
@@ -38,13 +46,36 @@ const formattedMonth = String(currentMonth + 1).padStart(2, '0');
 const formattedDay = String(selectedDayOfMonth).padStart(2, '0');
 currentDateString = `${formattedYear}-${formattedMonth}-${formattedDay}`;
 
+function updateTotals(bills) {
+    totalDue = 0;
+    totalPastDue = 0;
+    totalPaid = 0;
+
+    for (const dayBills of bills) {
+        for (const bill of dayBills) {
+            totalDue += bill.amount;
+        }
+    }
+}
+
+function updateTotalsTable() {
+    totalDueElement.innerHTML = totalDue.toString();
+    totalPastDueElement.innerHTML = totalPastDue.toString();
+    totalPastDueElement.classList.toggle('past-due', totalPastDue > 0);
+    totalPaidElement.innerHTML = totalPaid.toString();
+}
+
 // Stuff that is updated every time including the first time
 function updateHeadersAndCalendar() {
     dateNav.value = currentDateString;
     monthLabel.textContent = months[currentMonth];
     calendarElement.setAttribute('days-in-month', daysInMonth);
     calendarElement.setAttribute('start-day', startDay);
-    calendarElement.setBills(billsForMonth(currentMonth, currentYear));
+    const bills = billsForMonth(currentMonth, currentYear);
+    calendarElement.setBills(bills);
+
+    updateTotals(bills);
+    updateTotalsTable();
 }
 updateHeadersAndCalendar();
 calendarElement.setAttribute('selected-day', selectedDayOfMonth);
@@ -73,6 +104,8 @@ export function dateForDay(dayOfMonth) {
 
 addBillDialog.addEventListener('submit', e => {
     const {amount, name, startDate, type} = e.detail;
-    const bill = newBill(amount, name, startDate, type);
+    const bill = newBill(parseInt(amount, 10), name, startDate, type);
+    totalDue += bill.amount;
+    updateTotalsTable();
     calendarElement.addBillToDay(startDate.getDate(), bill);
 });
