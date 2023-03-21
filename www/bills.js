@@ -101,8 +101,8 @@ export function resetForTest() {
     bills = [];
 }
 
-export function newBill(amount, name, startDate, type) {
-    const bill = new Bill(name, amount, startDate, null, type);
+export function newBill(amount, name, startDate, endDate=null, type) {
+    const bill = new Bill(name, amount, startDate, endDate, type);
     bills.push(bill);
     return bill;
 }

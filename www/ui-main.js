@@ -103,8 +103,8 @@ export function dateForDay(dayOfMonth) {
 }
 
 addBillDialog.addEventListener('submit', e => {
-    const {amount, name, startDate, type} = e.detail;
-    const bill = newBill(parseInt(amount, 10), name, startDate, type);
+    const {amount, name, startDate, endDate, type} = e.detail;
+    const bill = newBill(parseInt(amount, 10), name, startDate, endDate, type);
     totalDue += bill.amount;
     updateTotalsTable();
     calendarElement.addBillToDay(startDate.getDate(), bill);

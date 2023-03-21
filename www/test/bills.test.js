@@ -59,7 +59,7 @@ run('bills tests', test => {
 
         const startDate = new Date(1970, 0, 1);
 
-        const bill = newBill(4, 'bill o\'reilly', startDate, 'monthly');
+        const bill = newBill(4, 'bill o\'reilly', startDate, null, 'monthly');
 
         expect(bill.recurringPeriod.constructor.type).toStrictlyEqual('monthly');
 
@@ -77,7 +77,7 @@ run('bills tests', test => {
 
         // March, 1970 has 31 days
         const startDate = new Date(1970, 2, 31);
-        const bill = newBill(5, 'bill de blasio', startDate, 'monthly');
+        const bill = newBill(5, 'bill de blasio', startDate, null, 'monthly');
 
         const billsThisMonth = billsForMonth(2, 1970);
         expect(billsThisMonth.length).toStrictlyEqual(31);
@@ -96,7 +96,7 @@ run('bills tests', test => {
 
         const startDate = new Date(1970, 0, 1);
 
-        const bill = newBill(6, 'bill clinton', startDate, 'monthly');
+        const bill = newBill(6, 'bill clinton', startDate, null, 'monthly');
 
         const billsThisMonth = billsForMonth(0, 1970);
         expect(billsThisMonth[0].length).toStrictlyEqual(1);
@@ -114,8 +114,7 @@ run('bills tests', test => {
         const startDate = new Date(1970, 0, 1);
         const endDate = new Date(1980, 0, 1);
 
-        const bill = newBill(7, 'bill maher', startDate, 'monthly');
-        bill.endBill(endDate);
+        const bill = newBill(7, 'bill maher', startDate, endDate, 'monthly');
 
         const billsThisMonth = billsForMonth(0, 1970);
         expect(billsThisMonth[0].length).toStrictlyEqual(1);
