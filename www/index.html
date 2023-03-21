@@ -4,15 +4,17 @@
         <meta charset="utf-8">
         <meta name="description" content="Lightweight calendar app for keeping track of monthly bill payments">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="lavender">
         <title>Bill Calendar</title>
-        <!-- <link rel="manifest" href="/manifest.json"> -->
+        <link rel="apple-touch-icon" href="/favicon_512.png">
+        <link rel="manifest" href="/manifest.json">
         <script>
             if ('serviceWorker' in navigator) {
                 // FIXME: Something wrong with the serviceWorker? It's impossible to
                 // get the stylesheet to update even after clearing the cache.
                 // Could be a browser glitch too (I'm on FF nightly iirc),
-                // should check on Chrome.
-                // navigator.serviceWorker.register('/service-worker.js');
+                // should check on Chrome. Cache disabled for now.
+                navigator.serviceWorker.register('/service-worker.js');
             }
         </script>
         <style>

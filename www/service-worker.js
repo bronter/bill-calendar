@@ -9,39 +9,40 @@ const URLS_TO_CACHE = [
 ];
 
 self.addEventListener('install', function(event) {
-    const cachePromise = caches.open(CACHE_NAME);
-    cachePromise.then(cache => cache.addAll(URLS_TO_CACHE));
-    event.waitUntil(cachePromise);
+    // const cachePromise = caches.open(CACHE_NAME);
+    // cachePromise.then(cache => cache.addAll(URLS_TO_CACHE));
+    // event.waitUntil(cachePromise);
 });
 
 self.addEventListener('activate', event => {
-    const cachePromise = caches
-        .keys()
-        .then(keylist => Promise.all(keyList.map(key => {
-            if (key !== CACHE_NAME) {// TODO includes?
-                return caches.delete(key);
-            }
-        })));
-    event.waitUntil(cachePromise);
+    // const cachePromise = caches
+    //     .keys()
+    //     .then(keylist => Promise.all(keyList.map(key => {
+    //         if (key !== CACHE_NAME) {// TODO includes?
+    //             return caches.delete(key);
+    //         }
+    //     })));
+    // event.waitUntil(cachePromise);
 })
 
 self.addEventListener('fetch', event => {
     const request = event.request;
     if (request.url.startsWith(self.location.origin)) {
-        const cachePromise = caches.match(request)
-            .then(cache => {
-                if (cache) {
-                    return cache;
-                }
+        // const cachePromise = caches.match(request)
+        //     .then(cache => {
+        //         if (cache) {
+        //             return cache;
+        //         }
     
-                return caches.open(CACHE_NAME).then(cache => {
-                    if (!navigator.onLine) {
-                        return;
-                    }
+        //         return caches.open(CACHE_NAME).then(cache => {
+        //             if (!navigator.onLine) {
+        //                 return;
+        //             }
 
-                    return fetch(event.request);
-                });
-            });
-        event.respondWith(cachePromise);
+        //             return fetch(event.request);
+        //         });
+        //     });
+        // event.respondWith(cachePromise);
+        event.respondWith(fetch(event.request));
     }
 });

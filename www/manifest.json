@@ -5,11 +5,16 @@
     "icons": [{
         "src": "/favicon.png",
         "type": "image/png",
-        "sizes": "16x16"
+        "sizes": "16x16",
+        "purpose": "maskable"
+    }, {
+        "src": "/favicon_512.png",
+        "type": "image/png",
+        "sizes": "512x512"
     }],
     "start_url": "/",
     "display": "standalone",
     "scope": "/",
-    "background-color": "#FFF",
-    "theme_color": "#FFF"
+    "background_color": "#FFF",
+    "theme_color": "lavender"
 }
