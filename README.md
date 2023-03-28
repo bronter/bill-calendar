@@ -1,6 +1,8 @@
 # bill-calendar
 Simple calendar for keeping track of bills
 
+Live demo at https://bronter.github.io/bill-calendar/
+
 There are three things I'm looking to accomplish with this app:
 1. To help me get comfortable with web components
 2. To see just how far I can get with no dependencies (other than a browser and a http server)
