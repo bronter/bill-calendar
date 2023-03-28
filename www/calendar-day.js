@@ -67,7 +67,7 @@ class CalendarDay extends TemplatedElement {
     // For adding a bill to a day or removing one, we have addBill() and removeBill()
     set bills(billsList) {
         const newBills = [];
-        for (const { bill, paid } of billsList) {
+        for (const bill of billsList) {
             const newBill = this.#makeDayBill(bill);
             newBills.push(newBill);
         }
