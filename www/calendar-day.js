@@ -40,9 +40,9 @@ class CalendarDay extends TemplatedElement {
             addBillDialog.showModal(this.dayOfMonth));
 
         this.billList.addEventListener('click', () => {
-            const billsCount = 0; // TODO: look it up or get it from the slot
+            const billsCount = this.billList.children.length; // TODO: look it up or get it from the slot
             if (billsCount > 0) {
-                billListDialog.showModal();
+                billListDialog.showModal(this.dayOfMonth);
             }
         });
     }
@@ -67,7 +67,7 @@ class CalendarDay extends TemplatedElement {
     // For adding a bill to a day or removing one, we have addBill() and removeBill()
     set bills(billsList) {
         const newBills = [];
-        for (const bill of billsList) {
+        for (const { bill, paid } of billsList) {
             const newBill = this.#makeDayBill(bill);
             newBills.push(newBill);
         }

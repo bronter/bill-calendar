@@ -1,14 +1,10 @@
 import { billsForMonth, newBill } from "./bills.js";
 
-// Make sure the calendar element is loaded before we try to manipulate it
-import './bill-calendar.js';
-
 // Not i18n friendly but that's more work for later
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const yyyymmLength = 'yyyy-mm'.length;
 
-const calendarElement = document.getElementById('calendar');
 const dateNav = document.getElementById('date-nav');
 const monthLabel = document.getElementById('month-label');
 
@@ -25,6 +21,8 @@ let currentMonth;
 let currentDateString;
 let daysInMonth;
 let startDay;
+
+let billsThisMonth = [];
 
 let totalDue = 0;
 let totalPastDue = 0;
@@ -51,9 +49,18 @@ function updateTotals(bills) {
     totalPastDue = 0;
     totalPaid = 0;
 
-    for (const dayBills of bills) {
+    for (const [index, dayBills] of bills.entries()) {
+        const date = new Date(currentYear, currentMonth, index + 1);
+        const dateStr = date.toISOString();
         for (const bill of dayBills) {
-            totalDue += bill.amount;
+            if (bill.payments.has(dateStr)) {
+                totalPaid += bill.amount;
+            } else {
+                totalDue += bill.amount;
+                if (date.getTime() < currentDate.getTime()) {
+                    totalPastDue += bill.amount;
+                }
+            }
         }
     }
 }
@@ -65,16 +72,20 @@ function updateTotalsTable() {
     totalPaidElement.innerHTML = totalPaid.toString();
 }
 
+// top-level await ftw
+await customElements.whenDefined('bill-calendar');
+const calendarElement = document.getElementById('calendar');
+
 // Stuff that is updated every time including the first time
 function updateHeadersAndCalendar() {
     dateNav.value = currentDateString;
     monthLabel.textContent = months[currentMonth];
     calendarElement.setAttribute('days-in-month', daysInMonth);
     calendarElement.setAttribute('start-day', startDay);
-    const bills = billsForMonth(currentMonth, currentYear);
-    calendarElement.setBills(bills);
+    billsThisMonth = billsForMonth(currentMonth, currentYear);
+    calendarElement.setBills(billsThisMonth);
 
-    updateTotals(bills);
+    updateTotals(billsThisMonth);
     updateTotalsTable();
 }
 updateHeadersAndCalendar();
@@ -102,10 +113,16 @@ export function dateForDay(dayOfMonth) {
     return new Date(currentYear, currentMonth, dayOfMonth);
 }
 
+export function billsForDay(dayOfMonth) {
+    return billsThisMonth[dayOfMonth - 1];
+}
+
 addBillDialog.addEventListener('submit', e => {
     const {amount, name, startDate, endDate, type} = e.detail;
     const bill = newBill(parseInt(amount, 10), name, startDate, endDate, type);
-    totalDue += bill.amount;
+    const day = startDate.getDate();
+    billsThisMonth[day - 1].push(bill);
+    updateTotals(billsThisMonth);
     updateTotalsTable();
-    calendarElement.addBillToDay(startDate.getDate(), bill);
+    calendarElement.addBillToDay(day, bill);
 });

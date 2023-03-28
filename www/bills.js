@@ -81,6 +81,19 @@ class Bill {
         // Big random number to minimise possibility of collision
         const randNum = Math.random().toString().slice(2);
         this.id = `${startDate.getTime()}-${name}-${randNum}`;
+
+        this.payments = new Set();
+    }
+
+    togglePaid(paymentDate, force) {
+        const dateStr = paymentDate.toISOString();
+        const currentState = this.payments.has(dateStr);
+        const shouldAdd = force ?? !currentState;
+        if (shouldAdd) {
+            this.payments.add(dateStr);
+        } else {
+            this.payments.delete(dateStr);
+        }
     }
 
     endBill(endDate) {
@@ -109,8 +122,7 @@ export function newBill(amount, name, startDate, endDate=null, type) {
 
 export function billsForMonth(month, year) {
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const billsThisMonth = [];
-    for (let i = 0; i < daysInMonth; ++i) billsThisMonth.push([]);
+    const billsThisMonth = Array.from(Array(daysInMonth), () => new Array());
     for (const bill of bills) {
         const billingDates = bill.recurringPeriod.billingDatesInMonth(month, year);
         for (const day of billingDates) {

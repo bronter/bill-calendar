@@ -14,7 +14,7 @@
                 // get the stylesheet to update even after clearing the cache.
                 // Could be a browser glitch too (I'm on FF nightly iirc),
                 // should check on Chrome. Cache disabled for now.
-                navigator.serviceWorker.register('/service-worker.js');
+                navigator.serviceWorker.register('/service-worker.js', { type: 'module' });
             }
         </script>
         <style>
@@ -120,6 +120,7 @@
         <script type="module" src="bill-calendar.js"></script>
         <script type="module" src="ui-main.js"></script>
         <script type="module" src="add-bill-dialog.js"></script>
+        <script type="module" src="bill-list-dialog.js"></script>
     </head>
     <body>
         <!-- Importing HTML templates from HTML documents probably won't
@@ -208,7 +209,6 @@
                     background-color: var(--bg-primary-color);
                 }
                 #date {
-                    /* height: 48px; */
                     padding: 12px 16px;
                     margin: 0;
                     background-color: var(--bg-secondary-color);
@@ -243,8 +243,43 @@
             </dialog>
         </template>
 
-        <dialog id="bill-list-dialog">diyiyiyiyiyiyiyalog</dialog>
+        <template id="bill-options-row-template">
+            <style>
+                label {
+                    float: right;
+                }
+            </style>
+            <span id="name"></span>
+            <label>Paid: <input type="checkbox" id="paid"></label>
+        </template>
+
+        <template id="bill-list-dialog-template">
+            <style>
+                #dialog {
+                    color: inherit;
+                    padding: 0;
+                    background-color: var(--bg-secondary-color);
+                    box-sizing: border-box;
+                    padding: 12px 16px
+                }
+                #date {
+                    /* padding: 12px 16px; */
+                    /* margin: 0; */
+                    background-color: var(--bg-secondary-color);
+                }
+                #list {
+                    display: flex;
+                    flex-direction: column;
+                }
+            </style>
+            <dialog id="dialog">
+                <h3 id="date"></h3>
+                <div id="list"></div>
+            </dialog>
+        </template>
+
         <add-bill-dialog id="add-bill-dialog"></add-bill-dialog>
+        <bill-list-dialog id="bill-list-dialog"></bill-list-dialog>
         <div id="nav-group">
             <label id="month-label" for="date-nav">Month</label>
             <input type="date" id="date-nav">
