@@ -292,6 +292,44 @@
                 .current-day {
                     background-color: var(--highlight-color);
                 }
+                
+                padding-day {
+                    opacity: 0;
+                }
+
+                :host([start-day="Sunday"]) > padding-day {
+                    display: none;
+                }
+                :host([start-day="Monday"]) > padding-day:nth-of-type(n+2) {
+                    display: none;
+                }
+                :host([start-day="Tuesday"]) > padding-day:nth-of-type(n+3) {
+                    display: none;
+                }
+                :host([start-day="Wednesday"]) > padding-day:nth-of-type(n+4) {
+                    display: none;
+                }
+                :host([start-day="Thursday"]) > padding-day:nth-of-type(n+5) {
+                    display: none;
+                }
+                :host([start-day="Friday"]) > padding-day:nth-of-type(n+6) {
+                    display: none;
+                }
+                /* No need for Saturday since all padding cells should be visible */
+                
+                :host([days-in-month="28"]) > calendar-day:nth-of-type(n+29) {
+                    display: none;
+                }
+                :host([days-in-month="29"]) > calendar-day:nth-of-type(n+30) {
+                    display: none;
+                }
+                :host([days-in-month="30"]) > calendar-day:nth-of-type(n+31) {
+                    display: none;
+                }
+
+                padding-day, calendar-day {
+                    background-color: var(--bg-primary-color);
+                }
 
                 @media screen and (min-width: 600px) {
                     :host {
@@ -301,43 +339,6 @@
                         row-gap: 3px;
                     }
 
-                    padding-day, calendar-day {
-                        background-color: var(--bg-primary-color);
-                    }
-
-                    padding-day {
-                        opacity: 0;
-                    }
-
-                    :host([start-day="Sunday"]) > padding-day {
-                        display: none;
-                    }
-                    :host([start-day="Monday"]) > padding-day:nth-of-type(n+2) {
-                        display: none;
-                    }
-                    :host([start-day="Tuesday"]) > padding-day:nth-of-type(n+3) {
-                        display: none;
-                    }
-                    :host([start-day="Wednesday"]) > padding-day:nth-of-type(n+4) {
-                        display: none;
-                    }
-                    :host([start-day="Thursday"]) > padding-day:nth-of-type(n+5) {
-                        display: none;
-                    }
-                    :host([start-day="Friday"]) > padding-day:nth-of-type(n+6) {
-                        display: none;
-                    }
-                    /* No need for Saturday since all padding cells should be visible */
-                    
-                    :host([days-in-month="28"]) > calendar-day:nth-of-type(n+29) {
-                        display: none;
-                    }
-                    :host([days-in-month="29"]) > calendar-day:nth-of-type(n+30) {
-                        display: none;
-                    }
-                    :host([days-in-month="30"]) > calendar-day:nth-of-type(n+31) {
-                        display: none;
-                    }
                     
                     .day-of-week-header {
                         text-align: center;
@@ -353,9 +354,6 @@
                     }
                     padding-day {
                         display: none;
-                    }
-                    calendar-day {
-                        background-color: var(--bg-primary-color);
                     }
                 }
             </style>
