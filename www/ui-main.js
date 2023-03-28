@@ -22,12 +22,11 @@ let selectedDateString;
 let daysInMonth;
 let startDay;
 
-let now = new Date();
-let currentYear = now.getFullYear();
-let currentMonth = now.getMonth();
-let currentDay = now.getDate();
-// Omit the specific time and have it be 0:00 local time
-let currentDate = new Date(currentYear, currentMonth, currentDay);
+let now;
+let currentYear;
+let currentMonth;
+let currentDay;
+let currentDate;
 
 let billsSelectedMonth = [];
 let billsThisMonth = [];
@@ -35,6 +34,15 @@ let billsThisMonth = [];
 let totalDue = 0;
 let totalPastDue = 0;
 let totalPaid = 0;
+
+function updateCurrentDate() {
+    now = new Date();
+    currentYear = now.getFullYear();
+    currentMonth = now.getMonth();
+    currentDay = now.getDate();
+    // Omit the specific time and have it be 0:00 local time
+    currentDate = new Date(currentYear, currentMonth, currentDay);
+}
 
 function afterDateUpdateData(newDate, dateString) {
     selectedDate = newDate;
@@ -52,13 +60,13 @@ const formattedMonth = String(selectedMonth + 1).padStart(2, '0');
 const formattedDay = String(selectedDayOfMonth).padStart(2, '0');
 selectedDateString = `${formattedYear}-${formattedMonth}-${formattedDay}`;
 
-function updateTotals(bills) {
+function updateTotals() {
     totalDue = 0;
     totalPastDue = 0;
     totalPaid = 0;
     const currentTime = currentDate.getTime();
 
-    for (const [index, dayBills] of bills.entries()) {
+    for (const [index, dayBills] of billsThisMonth.entries()) {
         const date = new Date(currentYear, currentMonth, index + 1);
         const dateStr = date.toISOString();
         for (const bill of dayBills) {
@@ -83,6 +91,22 @@ function updateTotalsTable() {
     totalPaidElement.innerHTML = totalPaid.toString();
 }
 
+function updateCurrentBills() {
+    billsThisMonth = billsForMonth(currentMonth, currentYear);
+    updateTotals();
+    updateTotalsTable();
+}
+
+function updateAtMidnight() {
+    updateCurrentDate();
+    updateCurrentBills();
+    const tomorrowMorning = new Date(currentDate);
+    tomorrowMorning.setDate(currentDay + 1);
+    const timeTillMidnight = tomorrowMorning - Date.now();
+    setTimeout(updateAtMidnight, timeTillMidnight);
+}
+updateAtMidnight();
+
 // top-level await ftw
 await customElements.whenDefined('bill-calendar');
 const calendarElement = document.getElementById('calendar');
@@ -94,11 +118,7 @@ function updateHeadersAndCalendar() {
     calendarElement.setAttribute('days-in-month', daysInMonth);
     calendarElement.setAttribute('start-day', startDay);
     billsSelectedMonth = billsForMonth(selectedMonth, selectedYear);
-    billsThisMonth = billsForMonth(currentMonth, currentYear);
     calendarElement.setBills(billsSelectedMonth);
-
-    updateTotals(billsThisMonth);
-    updateTotalsTable();
 }
 updateHeadersAndCalendar();
 calendarElement.setAttribute('selected-day', selectedDayOfMonth);
@@ -134,7 +154,7 @@ addBillDialog.addEventListener('submit', e => {
     const bill = newBill(parseInt(amount, 10), name, startDate, endDate, type);
     const day = startDate.getDate();
     billsSelectedMonth[day - 1].push(bill);
-    updateTotals(billsSelectedMonth);
-    updateTotalsTable();
     calendarElement.addBillToDay(day, bill);
+
+    updateCurrentBills();
 });
