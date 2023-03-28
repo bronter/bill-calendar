@@ -47,6 +47,10 @@ class BillListDialog extends TemplatedElement {
         this.dateHeader = shadowRoot.getElementById('date');
         this.dialog = shadowRoot.getElementById('dialog');
         this.list = shadowRoot.getElementById('list');
+        this.done = shadowRoot.getElementById('done');
+        this.done.addEventListener('click', () => {
+            this.dialog.close();
+        })
     }
 
     #populateBillList(day, date) {

@@ -205,16 +205,11 @@
             <style>
                 #dialog {
                     color: inherit;
-                    padding: 0;
-                    background-color: var(--bg-primary-color);
-                }
-                #date {
-                    padding: 12px 16px;
-                    margin: 0;
                     background-color: var(--bg-secondary-color);
+                    box-sizing: border-box;
+                    padding: 0px 12px 16px 12px;
                 }
                 #bill-form {
-                    padding: 12px 16px;
                     margin: 0;
                     line-height: 32px;
                 }
@@ -224,6 +219,14 @@
                 }
                 label {
                     display: block;
+                }
+                button {
+                    float: right;
+                }
+                @media screen and (max-width: 600px) {
+                    button {
+                        font-size: 18px;
+                    }
                 }
             </style>
             <dialog id="dialog">
@@ -237,8 +240,8 @@
                     </select></label>
                     <label>Temporary? <input type="checkbox" id="temporary"></label>
                     <label>End Date: <input type="date" id="end-date" disabled required></label>
-                    <button id="add-button" value="submit">Add</button>
                     <button id="cancel-button" value="cancel" formnovalidate>Cancel</button>
+                    <button id="add-button" value="submit">Add</button>
                 </form>
             </dialog>
         </template>
@@ -257,24 +260,29 @@
             <style>
                 #dialog {
                     color: inherit;
-                    padding: 0;
                     background-color: var(--bg-secondary-color);
                     box-sizing: border-box;
-                    padding: 12px 16px
-                }
-                #date {
-                    /* padding: 12px 16px; */
-                    /* margin: 0; */
-                    background-color: var(--bg-secondary-color);
+                    padding: 0px 12px 16px 12px;
                 }
                 #list {
                     display: flex;
                     flex-direction: column;
+                    line-height: 32px;
+                }
+                button {
+                    float: right;
+                }
+
+                @media screen and (max-width: 600px) {
+                    button {
+                        font-size: 18px;
+                    }
                 }
             </style>
             <dialog id="dialog">
                 <h3 id="date"></h3>
                 <div id="list"></div>
+                <button id="done">Done</button>
             </dialog>
         </template>
 
