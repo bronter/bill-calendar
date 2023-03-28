@@ -27,7 +27,6 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
     const request = event.request;
-    console.log(request.url, self.location.origin);
     if (request.url.startsWith(self.location.origin)) {
         // const cachePromise = caches.match(request)
         //     .then(cache => {
