@@ -28,7 +28,7 @@ class BillOptionsRow extends TemplatedElement {
         this.bill = bill;
         await this.connectedPromise;
         this.name.textContent = bill.name;
-        this.paid.value = bill.payments.has(this.date.toISOString());
+        this.paid.checked = bill.payments.has(this.date.toISOString());
     }
 }
 
