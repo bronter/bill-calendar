@@ -7,14 +7,14 @@
         <meta name="theme-color" content="lavender">
         <title>Bill Calendar</title>
         <link rel="apple-touch-icon" href="/favicon_512.png">
-        <link rel="manifest" href="/manifest.json">
+        <link rel="manifest" href="manifest.json">
         <script>
             if ('serviceWorker' in navigator) {
                 // FIXME: Something wrong with the serviceWorker? It's impossible to
                 // get the stylesheet to update even after clearing the cache.
                 // Could be a browser glitch too (I'm on FF nightly iirc),
                 // should check on Chrome. Cache disabled for now.
-                navigator.serviceWorker.register('/service-worker.js', { type: 'module' });
+                navigator.serviceWorker.register('service-worker.js', { type: 'module' });
             }
         </script>
         <style>
