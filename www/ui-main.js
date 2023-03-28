@@ -8,8 +8,6 @@ const yyyymmLength = 'yyyy-mm'.length;
 const dateNav = document.getElementById('date-nav');
 const monthLabel = document.getElementById('month-label');
 
-const addBillDialog = document.getElementById('add-bill-dialog');
-
 const totalDueElement = document.getElementById('total-due');
 const totalPastDueElement = document.getElementById('total-past-due');
 const totalPaidElement = document.getElementById('total-paid');
@@ -149,6 +147,8 @@ export function billsForDay(dayOfMonth) {
     return billsSelectedMonth[dayOfMonth - 1];
 }
 
+const addBillDialog = document.getElementById('add-bill-dialog');
+
 addBillDialog.addEventListener('submit', e => {
     const {amount, name, startDate, endDate, type} = e.detail;
     const bill = newBill(parseInt(amount, 10), name, startDate, endDate, type);
@@ -156,5 +156,10 @@ addBillDialog.addEventListener('submit', e => {
     billsSelectedMonth[day - 1].push(bill);
     calendarElement.addBillToDay(day, bill);
 
+    updateCurrentBills();
+});
+
+const billListDialog = document.getElementById('bill-list-dialog');
+billListDialog.addEventListener('bill-pay', () => {
     updateCurrentBills();
 });

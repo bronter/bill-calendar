@@ -16,6 +16,8 @@ class BillOptionsRow extends TemplatedElement {
         this.paid.addEventListener('change', e => {
             const paid = e.target.checked;
             this.bill?.togglePaid(this.date, paid);
+            const paidEvent = new CustomEvent('bill-pay', { detail: paid });
+            this.dispatchEvent(paidEvent);
         });
         this.resolveConnected();
     }
@@ -56,10 +58,15 @@ class BillListDialog extends TemplatedElement {
     #populateBillList(day, date) {
         const bills = billsForDay(day);
         const billItems = [];
+        const eventListener = e => {
+            const clone = new e.constructor(e.type, e);
+            this.dispatchEvent(clone);
+        };
         for (const bill of bills) {
             const billItem = document.createElement('bill-options-row');
             billItem.setBill(bill);
             billItem.setDate(date);
+            billItem.addEventListener('bill-pay', eventListener);
             billItems.push(billItem);
         }
         this.list.replaceChildren(...billItems);
