@@ -48,6 +48,9 @@
                 align-items: center;
             }
 
+            /* I'd like to do something like (min-width: var(--transition-width))
+            /* But it seems you can't use variables in media selectors (yet) */
+            /* Maybe soon though? https://drafts.csswg.org/css-env-1/ */
             @media screen and (min-width: 600px) {
                 #month-label {
                     font-size: 24px;
