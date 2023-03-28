@@ -1,3 +1,4 @@
+* Implement proper caching in the service worker so app can be installed as a PWA
 * Persist data across page loads
 * Update calendar at midnight
 * handle recurring payments with multiple types of periods
