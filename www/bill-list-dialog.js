@@ -1,4 +1,5 @@
 import TemplatedElement from "./templated-element.js";
+import SingletonElement from "./singleton-element.js";
 import { dateForDay, billsForDay } from "./ui-main.js";
 
 class BillOptionsRow extends TemplatedElement {
@@ -38,8 +39,7 @@ customElements.define('bill-options-row', BillOptionsRow);
 
 // TODO: This shares styles and logic with add-bill-dialog,
 //       should have them share a stylesheet and extend a BillDialogElement or something
-class BillListDialog extends TemplatedElement {
-    static templateId = 'bill-list-dialog-template';
+class BillListDialog extends SingletonElement {
     static #headerDateFormatOptions = {
         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
     };

@@ -118,6 +118,7 @@
         <!-- It looks like modulepreload is standard now but still not supported in Firefox and Safari? -->
         <!-- Looks like it was recently merged into WebKit so maybe Safari support soon, no news on FF...-->
         <link rel="modulepreload" href="templated-element.js">
+        <link rel="modulePreload" href="singleton-element.js">
         <link rel="modulepreload" href="bills.js">
         <script type="module" src="calendar-day.js"></script>
         <script type="module" src="bill-calendar.js"></script>
@@ -205,7 +206,7 @@
         </template>
 
         <add-bill-dialog id="add-bill-dialog">
-            <template id="add-bill-template">
+            <template>
                 <style>
                     #dialog {
                         color: inherit;
@@ -262,7 +263,7 @@
         </template>
 
         <bill-list-dialog id="bill-list-dialog">
-            <template id="bill-list-dialog-template">
+            <template>
                 <style>
                     #dialog {
                         color: inherit;
@@ -297,7 +298,7 @@
             <input type="date" id="date-nav">
         </div>
         <bill-calendar id="calendar">
-            <template id="bill-calendar">
+            <template>
                 <style>
                     :host {
                         display: block;

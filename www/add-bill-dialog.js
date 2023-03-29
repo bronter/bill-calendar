@@ -1,8 +1,7 @@
-import TemplatedElement from "./templated-element.js";
+import SingletonElement from "./singleton-element.js";
 import { dateForDay } from "./ui-main.js";
 
-class AddBillDialog extends TemplatedElement {
-    static templateId = 'add-bill-template';
+class AddBillDialog extends SingletonElement {
     static #headerDateFormatOptions = {
         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
     };

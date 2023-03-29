@@ -1,11 +1,9 @@
-import TemplatedElement from "./templated-element.js";
+import SingletonElement from "./singleton-element.js";
 
 // Make sure calendar-day element is loaded first, otherwise bills setter won't work
 const calendarDayDefined = customElements.whenDefined('calendar-day');
 
-class BillCalendar extends TemplatedElement {
-    static templateId = 'bill-calendar';
-
+class BillCalendar extends SingletonElement {
     constructor() {
         super();
 
