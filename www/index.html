@@ -204,50 +204,52 @@
             <span id="amount"></span>
         </template>
 
-        <template id="add-bill-template">
-            <style>
-                #dialog {
-                    color: inherit;
-                    background-color: var(--bg-secondary-color);
-                    box-sizing: border-box;
-                    padding: 0px 12px 16px 12px;
-                }
-                #bill-form {
-                    margin: 0;
-                    line-height: 32px;
-                }
-                input, select {
-                    max-width: 128px;
-                    float: right;
-                }
-                label {
-                    display: block;
-                }
-                button {
-                    float: right;
-                }
-                @media screen and (max-width: 600px) {
-                    button {
-                        font-size: 18px;
+        <add-bill-dialog id="add-bill-dialog">
+            <template id="add-bill-template">
+                <style>
+                    #dialog {
+                        color: inherit;
+                        background-color: var(--bg-secondary-color);
+                        box-sizing: border-box;
+                        padding: 0px 12px 16px 12px;
                     }
-                }
-            </style>
-            <dialog id="dialog">
-                <h3 id="date"></h3>
-                <form id="bill-form" method="dialog">
-                    <label>Name <input type="text" id="name" required></label>
-                    <label>Amount <input type="number" min="0" id="amount" required></label>
-                    <label>Type <select id="type">
-                        <option value="non-recurring" selected>Non-Recurring</option>
-                        <option value="monthly">Monthly</option>
-                    </select></label>
-                    <label>Temporary? <input type="checkbox" id="temporary"></label>
-                    <label>End Date: <input type="date" id="end-date" disabled required></label>
-                    <button id="cancel-button" value="cancel" formnovalidate>Cancel</button>
-                    <button id="add-button" value="submit">Add</button>
-                </form>
-            </dialog>
-        </template>
+                    #bill-form {
+                        margin: 0;
+                        line-height: 32px;
+                    }
+                    input, select {
+                        max-width: 128px;
+                        float: right;
+                    }
+                    label {
+                        display: block;
+                    }
+                    button {
+                        float: right;
+                    }
+                    @media screen and (max-width: 600px) {
+                        button {
+                            font-size: 18px;
+                        }
+                    }
+                </style>
+                <dialog id="dialog">
+                    <h3 id="date"></h3>
+                    <form id="bill-form" method="dialog">
+                        <label>Name <input type="text" id="name" required></label>
+                        <label>Amount <input type="number" min="0" id="amount" required></label>
+                        <label>Type <select id="type">
+                            <option value="non-recurring" selected>Non-Recurring</option>
+                            <option value="monthly">Monthly</option>
+                        </select></label>
+                        <label>Temporary? <input type="checkbox" id="temporary"></label>
+                        <label>End Date: <input type="date" id="end-date" disabled required></label>
+                        <button id="cancel-button" value="cancel" formnovalidate>Cancel</button>
+                        <button id="add-button" value="submit">Add</button>
+                    </form>
+                </dialog>
+            </template>
+        </add-bill-dialog>
 
         <template id="bill-options-row-template">
             <style>
@@ -259,164 +261,163 @@
             <label>Paid: <input type="checkbox" id="paid"></label>
         </template>
 
-        <template id="bill-list-dialog-template">
-            <style>
-                #dialog {
-                    color: inherit;
-                    background-color: var(--bg-secondary-color);
-                    box-sizing: border-box;
-                    padding: 0px 12px 16px 12px;
-                }
-                #list {
-                    display: flex;
-                    flex-direction: column;
-                    line-height: 32px;
-                }
-                button {
-                    float: right;
-                }
-
-                @media screen and (max-width: 600px) {
-                    button {
-                        font-size: 18px;
+        <bill-list-dialog id="bill-list-dialog">
+            <template id="bill-list-dialog-template">
+                <style>
+                    #dialog {
+                        color: inherit;
+                        background-color: var(--bg-secondary-color);
+                        box-sizing: border-box;
+                        padding: 0px 12px 16px 12px;
                     }
-                }
-            </style>
-            <dialog id="dialog">
-                <h3 id="date"></h3>
-                <div id="list"></div>
-                <button id="done">Done</button>
-            </dialog>
-        </template>
-
-        <add-bill-dialog id="add-bill-dialog"></add-bill-dialog>
-        <bill-list-dialog id="bill-list-dialog"></bill-list-dialog>
+                    #list {
+                        display: flex;
+                        flex-direction: column;
+                        line-height: 32px;
+                    }
+                    button {
+                        float: right;
+                    }
+    
+                    @media screen and (max-width: 600px) {
+                        button {
+                            font-size: 18px;
+                        }
+                    }
+                </style>
+                <dialog id="dialog">
+                    <h3 id="date"></h3>
+                    <div id="list"></div>
+                    <button id="done">Done</button>
+                </dialog>
+            </template>
+        </bill-list-dialog>
         <div id="nav-group">
             <label id="month-label" for="date-nav">Month</label>
             <input type="date" id="date-nav">
         </div>
-        <template id="bill-calendar">
-            <style>
-                :host {
-                    display: block;
-                }
-                .current-day {
-                    background-color: var(--highlight-color);
-                }
-                
-                padding-day {
-                    opacity: 0;
-                }
-
-                :host([start-day="Sunday"]) > padding-day {
-                    display: none;
-                }
-                :host([start-day="Monday"]) > padding-day:nth-of-type(n+2) {
-                    display: none;
-                }
-                :host([start-day="Tuesday"]) > padding-day:nth-of-type(n+3) {
-                    display: none;
-                }
-                :host([start-day="Wednesday"]) > padding-day:nth-of-type(n+4) {
-                    display: none;
-                }
-                :host([start-day="Thursday"]) > padding-day:nth-of-type(n+5) {
-                    display: none;
-                }
-                :host([start-day="Friday"]) > padding-day:nth-of-type(n+6) {
-                    display: none;
-                }
-                /* No need for Saturday since all padding cells should be visible */
-                
-                :host([days-in-month="28"]) > calendar-day:nth-of-type(n+29) {
-                    display: none;
-                }
-                :host([days-in-month="29"]) > calendar-day:nth-of-type(n+30) {
-                    display: none;
-                }
-                :host([days-in-month="30"]) > calendar-day:nth-of-type(n+31) {
-                    display: none;
-                }
-
-                padding-day, calendar-day {
-                    background-color: var(--bg-primary-color);
-                }
-
-                @media screen and (min-width: 600px) {
+        <bill-calendar id="calendar">
+            <template id="bill-calendar">
+                <style>
                     :host {
-                        display: grid;
-                        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-                        column-gap: 3px;
-                        row-gap: 3px;
+                        display: block;
                     }
-
+                    .current-day {
+                        background-color: var(--highlight-color);
+                    }
                     
-                    .day-of-week-header {
-                        text-align: center;
-                        padding-top: 4px;
-                        padding-bottom: 4px;
-                        background-color: var(--header-color);
-                    }
-                }
-
-                @media screen and (max-width: 600px) {
-                    .day-of-week-header {
-                        display: none;
-                    }
                     padding-day {
+                        opacity: 0;
+                    }
+
+                    :host([start-day="Sunday"]) > padding-day {
                         display: none;
                     }
-                }
-            </style>
-            <!-- TODO: figure out a way to do i18n on these -->
-            <!-- Will probably have to default to English and then have some JS update it once the page loads -->
-            <div class="day-of-week-header">Sunday</div>
-            <div class="day-of-week-header">Monday</div>
-            <div class="day-of-week-header">Tuesday</div>
-            <div class="day-of-week-header">Wednesday</div>
-            <div class="day-of-week-header">Thursday</div>
-            <div class="day-of-week-header">Friday</div>
-            <div class="day-of-week-header">Saturday</div>
-            <padding-day></padding-day>
-            <padding-day></padding-day>
-            <padding-day></padding-day>
-            <padding-day></padding-day>
-            <padding-day></padding-day>
-            <padding-day></padding-day>
-            <calendar-day day-of-month="1"></calendar-day>
-            <calendar-day day-of-month="2"></calendar-day>
-            <calendar-day day-of-month="3"></calendar-day>
-            <calendar-day day-of-month="4"></calendar-day>
-            <calendar-day day-of-month="5"></calendar-day>
-            <calendar-day day-of-month="6"></calendar-day>
-            <calendar-day day-of-month="7"></calendar-day>
-            <calendar-day day-of-month="8"></calendar-day>
-            <calendar-day day-of-month="9"></calendar-day>
-            <calendar-day day-of-month="10"></calendar-day>
-            <calendar-day day-of-month="11"></calendar-day>
-            <calendar-day day-of-month="12"></calendar-day>
-            <calendar-day day-of-month="13"></calendar-day>
-            <calendar-day day-of-month="14"></calendar-day>
-            <calendar-day day-of-month="15"></calendar-day>
-            <calendar-day day-of-month="16"></calendar-day>
-            <calendar-day day-of-month="17"></calendar-day>
-            <calendar-day day-of-month="18"></calendar-day>
-            <calendar-day day-of-month="19"></calendar-day>
-            <calendar-day day-of-month="20"></calendar-day>
-            <calendar-day day-of-month="21"></calendar-day>
-            <calendar-day day-of-month="22"></calendar-day>
-            <calendar-day day-of-month="23"></calendar-day>
-            <calendar-day day-of-month="24"></calendar-day>
-            <calendar-day day-of-month="25"></calendar-day>
-            <calendar-day day-of-month="26"></calendar-day>
-            <calendar-day day-of-month="27"></calendar-day>
-            <calendar-day day-of-month="28"></calendar-day>
-            <calendar-day day-of-month="29"></calendar-day>
-            <calendar-day day-of-month="30"></calendar-day>
-            <calendar-day day-of-month="31"></calendar-day>
-        </template>
+                    :host([start-day="Monday"]) > padding-day:nth-of-type(n+2) {
+                        display: none;
+                    }
+                    :host([start-day="Tuesday"]) > padding-day:nth-of-type(n+3) {
+                        display: none;
+                    }
+                    :host([start-day="Wednesday"]) > padding-day:nth-of-type(n+4) {
+                        display: none;
+                    }
+                    :host([start-day="Thursday"]) > padding-day:nth-of-type(n+5) {
+                        display: none;
+                    }
+                    :host([start-day="Friday"]) > padding-day:nth-of-type(n+6) {
+                        display: none;
+                    }
+                    /* No need for Saturday since all padding cells should be visible */
+                    
+                    :host([days-in-month="28"]) > calendar-day:nth-of-type(n+29) {
+                        display: none;
+                    }
+                    :host([days-in-month="29"]) > calendar-day:nth-of-type(n+30) {
+                        display: none;
+                    }
+                    :host([days-in-month="30"]) > calendar-day:nth-of-type(n+31) {
+                        display: none;
+                    }
 
-        <bill-calendar id="calendar"></bill-calendar>
+                    padding-day, calendar-day {
+                        background-color: var(--bg-primary-color);
+                    }
+
+                    @media screen and (min-width: 600px) {
+                        :host {
+                            display: grid;
+                            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+                            column-gap: 3px;
+                            row-gap: 3px;
+                        }
+
+                        
+                        .day-of-week-header {
+                            text-align: center;
+                            padding-top: 4px;
+                            padding-bottom: 4px;
+                            background-color: var(--header-color);
+                        }
+                    }
+
+                    @media screen and (max-width: 600px) {
+                        .day-of-week-header {
+                            display: none;
+                        }
+                        padding-day {
+                            display: none;
+                        }
+                    }
+                </style>
+                <!-- TODO: figure out a way to do i18n on these -->
+                <!-- Will probably have to default to English and then have some JS update it once the page loads -->
+                <div class="day-of-week-header">Sunday</div>
+                <div class="day-of-week-header">Monday</div>
+                <div class="day-of-week-header">Tuesday</div>
+                <div class="day-of-week-header">Wednesday</div>
+                <div class="day-of-week-header">Thursday</div>
+                <div class="day-of-week-header">Friday</div>
+                <div class="day-of-week-header">Saturday</div>
+                <padding-day></padding-day>
+                <padding-day></padding-day>
+                <padding-day></padding-day>
+                <padding-day></padding-day>
+                <padding-day></padding-day>
+                <padding-day></padding-day>
+                <calendar-day day-of-month="1"></calendar-day>
+                <calendar-day day-of-month="2"></calendar-day>
+                <calendar-day day-of-month="3"></calendar-day>
+                <calendar-day day-of-month="4"></calendar-day>
+                <calendar-day day-of-month="5"></calendar-day>
+                <calendar-day day-of-month="6"></calendar-day>
+                <calendar-day day-of-month="7"></calendar-day>
+                <calendar-day day-of-month="8"></calendar-day>
+                <calendar-day day-of-month="9"></calendar-day>
+                <calendar-day day-of-month="10"></calendar-day>
+                <calendar-day day-of-month="11"></calendar-day>
+                <calendar-day day-of-month="12"></calendar-day>
+                <calendar-day day-of-month="13"></calendar-day>
+                <calendar-day day-of-month="14"></calendar-day>
+                <calendar-day day-of-month="15"></calendar-day>
+                <calendar-day day-of-month="16"></calendar-day>
+                <calendar-day day-of-month="17"></calendar-day>
+                <calendar-day day-of-month="18"></calendar-day>
+                <calendar-day day-of-month="19"></calendar-day>
+                <calendar-day day-of-month="20"></calendar-day>
+                <calendar-day day-of-month="21"></calendar-day>
+                <calendar-day day-of-month="22"></calendar-day>
+                <calendar-day day-of-month="23"></calendar-day>
+                <calendar-day day-of-month="24"></calendar-day>
+                <calendar-day day-of-month="25"></calendar-day>
+                <calendar-day day-of-month="26"></calendar-day>
+                <calendar-day day-of-month="27"></calendar-day>
+                <calendar-day day-of-month="28"></calendar-day>
+                <calendar-day day-of-month="29"></calendar-day>
+                <calendar-day day-of-month="30"></calendar-day>
+                <calendar-day day-of-month="31"></calendar-day>
+            </template>
+        </bill-calendar>
         <table id="totals">
             <tr>
                 <td>Total Due: </td>
