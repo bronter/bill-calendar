@@ -18,7 +18,7 @@ const RESOURCES = [
     '/singleton-element.js',
     '/templated-element.js',
     '/ui-main.js'
-];
+].map(r => self.location.origin + r);
 
 self.addEventListener('install', event => {
     const cachePromise = caches
