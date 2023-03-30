@@ -12,9 +12,9 @@
         "type": "image/png",
         "sizes": "512x512"
     }],
-    "start_url": "/bill-calendar",
+    "start_url": "/bill-calendar/index.html",
     "display": "standalone",
-    "scope": "/",
+    "scope": "/bill-calendar/",
     "background_color": "#FFF",
     "theme_color": "lavender"
 }
