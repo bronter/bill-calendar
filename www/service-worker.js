@@ -20,6 +20,8 @@ const RESOURCES = [
     '/ui-main.js'
 ].map(r => self.location.origin + r);
 
+console.log(self.location);
+
 self.addEventListener('install', event => {
     const cachePromise = caches
         .open(CACHE_NAME)
