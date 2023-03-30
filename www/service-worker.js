@@ -32,10 +32,6 @@ self.addEventListener('install', event => {
 });
 
 async function activate() {
-    const { navigationPreload } = self.registration;
-    if (navigationPreload) {
-        await navigationPreload.enable();
-    }
     const cacheKeys = await caches.keys();
     // We're going to just delete everything that isn't the latest version
     const promises = cacheKeys
@@ -71,31 +67,15 @@ async function doFetch(event) {
     }
 }
 
-async function doPreload(event) {
-    const { request } = event;
-    const preloadResponse = await event.preloadResponse;
-
-    if (preloadResponse) {
-        const clone = preloadResponse.clone();
-        addToCache(request, clone);
-        return preloadResponse;
-    }
-}
-
 async function cacheOrFetch(event) {
     const { request } = event;
     const cacheResponse = await caches.match(request);
-    
+    const fetchPromise = doFetch(event);
     if (cacheResponse) {
         return cacheResponse;
     }
     
-    const preloadResponse = await doPreload(event);
-    const fetchResponsePromise = doFetch(event);
-    if (preloadResponse) {
-        return preloadResponse;
-    }
-    return fetchResponsePromise;
+    return fetchPromise;
 }
 
 self.addEventListener('fetch', event => {
