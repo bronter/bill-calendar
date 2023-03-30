@@ -85,13 +85,13 @@ async function doPreload(event) {
 async function cacheOrFetch(event) {
     const { request } = event;
     const cacheResponse = await caches.match(request);
-    const fetchResponsePromise = doFetch(event);
-
+    
     if (cacheResponse) {
         return cacheResponse;
     }
-
+    
     const preloadResponse = await doPreload(event);
+    const fetchResponsePromise = doFetch(event);
     if (preloadResponse) {
         return preloadResponse;
     }
