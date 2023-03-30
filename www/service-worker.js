@@ -3,6 +3,8 @@
 // * https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
 
 const CACHE_NAME = 'bill-calendar-0.0.1';
+const href = self.location.href;
+const BASE_URL = href.slice(0, href.lastIndexOf('/'));
 const RESOURCES = [
     '/',
     '/add-bill-dialog.js',
@@ -18,9 +20,9 @@ const RESOURCES = [
     '/singleton-element.js',
     '/templated-element.js',
     '/ui-main.js'
-].map(r => self.location.origin + r);
+].map(r => BASE_URL + r);
 
-console.log(self.location);
+console.log(BASE_URL);
 
 self.addEventListener('install', event => {
     const cachePromise = caches
