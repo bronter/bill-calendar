@@ -7,7 +7,7 @@ class BillCalendar extends SingletonElement {
         this.calendarDayNodeList = this.shadowRoot.querySelectorAll('calendar-day');
     }
 
-    async connectedCallback() {
+    connectedCallback() {
         const selectedDay = this.getAttribute('selected-day');
         if (selectedDay) {
             this.calendarDayNodeList.item(selectedDay - 1).classList.add('current-day');
@@ -17,7 +17,7 @@ class BillCalendar extends SingletonElement {
     static get observedAttributes() {
         return ['selected-day'];
     }
-    async attributeChangedCallback(name, oldValue, newValue) {
+    attributeChangedCallback(name, oldValue, newValue) {
         if (name === 'selected-day') {
             if (oldValue) {
                 this.calendarDayNodeList.item(parseInt(oldValue, 10) - 1).classList.remove('current-day');
@@ -26,17 +26,17 @@ class BillCalendar extends SingletonElement {
         }
     }
 
-    async setBills(allBills) {
+    setBills(allBills) {
         allBills.forEach((bills, index) => {
             this.calendarDayNodeList.item(index).bills = bills;
         });
     }
 
-    async setBillsForDay(dayOfMonth, bills) {
+    setBillsForDay(dayOfMonth, bills) {
         this.calendarDayNodeList.item(dayOfMonth - 1).bills = bills;
     }
 
-    async addBillToDay(dayOfMonth, bill) {
+    addBillToDay(dayOfMonth, bill) {
         this.calendarDayNodeList.item(dayOfMonth - 1).addBill(bill);
     }
 }
