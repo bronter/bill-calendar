@@ -1,8 +1,5 @@
 class DateController {
     #dateChangeHandlers = [];
-    #currentYear = undefined;
-    #currentMonth = undefined;
-    #currentDay = undefined;
     #currentDate = undefined;
 
     constructor() {
@@ -12,11 +9,8 @@ class DateController {
 
     #updateCurrentDate() {
         const now = new Date();
-        this.#currentYear = now.getFullYear();
-        this.#currentMonth = now.getMonth();
-        this.#currentDay = now.getDate();
         // Omit the specific time and have it be 0:00 local time
-        this.#currentDate = new Date(this.#currentYear, this.#currentMonth, this.#currentDay);
+        this.#currentDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
         for (const handler of this.#dateChangeHandlers) {
             handler(this);
@@ -26,7 +20,7 @@ class DateController {
     #updateAtMidnight() {
         this.#updateCurrentDate();
         const tomorrowMorning = new Date(this.#currentDate);
-        tomorrowMorning.setDate(this.#currentDay + 1);
+        tomorrowMorning.setDate(this.currentDay + 1);
         const timeTillMidnight = tomorrowMorning - Date.now();
         setTimeout(this.#updateAtMidnight.bind(this), timeTillMidnight);
     }
@@ -34,13 +28,13 @@ class DateController {
     // Allowing these to be set directly could corrupt internal state;
     // make them read-only by using getters and private properties.
     get currentYear() {
-        return this.#currentYear;
+        return this.#currentDate.getFullYear();
     }
     get currentMonth() {
-        return this.#currentMonth;
+        return this.#currentDate.getMonth();
     }
     get currentDay() {
-        return this.#currentDay;
+        return this.#currentDate.getDate();
     }
     get currentDate() {
         return this.#currentDate;
