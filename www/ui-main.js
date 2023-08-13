@@ -8,10 +8,6 @@ const yyyymmLength = 'yyyy-mm'.length;
 const dateNav = document.getElementById('date-nav');
 const monthLabel = document.getElementById('month-label');
 
-const totalDueElement = document.getElementById('total-due');
-const totalPastDueElement = document.getElementById('total-past-due');
-const totalPaidElement = document.getElementById('total-paid');
-
 let selectedDate;
 let selectedDayOfMonth; // Not zero-based
 let selectedYear;
@@ -20,27 +16,7 @@ let selectedDateString;
 let daysInMonth;
 let startDay;
 
-let now;
-let currentYear;
-let currentMonth;
-let currentDay;
-let currentDate;
-
 let billsSelectedMonth = [];
-let billsThisMonth = [];
-
-let totalDue = 0;
-let totalPastDue = 0;
-let totalPaid = 0;
-
-function updateCurrentDate() {
-    now = new Date();
-    currentYear = now.getFullYear();
-    currentMonth = now.getMonth();
-    currentDay = now.getDate();
-    // Omit the specific time and have it be 0:00 local time
-    currentDate = new Date(currentYear, currentMonth, currentDay);
-}
 
 function afterDateUpdateData(newDate, dateString) {
     selectedDate = newDate;
@@ -57,53 +33,6 @@ const formattedYear = String(selectedYear).padStart(4, '0');
 const formattedMonth = String(selectedMonth + 1).padStart(2, '0');
 const formattedDay = String(selectedDayOfMonth).padStart(2, '0');
 selectedDateString = `${formattedYear}-${formattedMonth}-${formattedDay}`;
-
-function updateTotals() {
-    totalDue = 0;
-    totalPastDue = 0;
-    totalPaid = 0;
-    const currentTime = currentDate.getTime();
-
-    for (const [index, dayBills] of billsThisMonth.entries()) {
-        const date = new Date(currentYear, currentMonth, index + 1);
-        const dateStr = date.toISOString();
-        for (const bill of dayBills) {
-            if (bill.payments.has(dateStr)) {
-                totalPaid += bill.amount;
-            } else {
-                totalDue += bill.amount;
-                // We use the browser's selected time rather than the selected date;
-                // we never want to give the user a false impression that bills are overdue
-                if (date.getTime() < currentTime) {
-                    totalPastDue += bill.amount;
-                }
-            }
-        }
-    }
-}
-
-function updateTotalsTable() {
-    totalDueElement.innerHTML = totalDue.toString();
-    totalPastDueElement.innerHTML = totalPastDue.toString();
-    totalPastDueElement.classList.toggle('past-due', totalPastDue > 0);
-    totalPaidElement.innerHTML = totalPaid.toString();
-}
-
-function updateCurrentBills() {
-    billsThisMonth = billsForMonth(currentMonth, currentYear);
-    updateTotals();
-    updateTotalsTable();
-}
-
-function updateAtMidnight() {
-    updateCurrentDate();
-    updateCurrentBills();
-    const tomorrowMorning = new Date(currentDate);
-    tomorrowMorning.setDate(currentDay + 1);
-    const timeTillMidnight = tomorrowMorning - Date.now();
-    setTimeout(updateAtMidnight, timeTillMidnight);
-}
-updateAtMidnight();
 
 // top-level await ftw
 await customElements.whenDefined('bill-calendar');
@@ -149,6 +78,9 @@ export function billsForDay(dayOfMonth) {
 
 const addBillDialog = document.getElementById('add-bill-dialog');
 
+await customElements.whenDefined('totals-table');
+const totalsTable = document.getElementById('totals');
+
 addBillDialog.addEventListener('submit', e => {
     const {amount, name, startDate, endDate, type} = e.detail;
     const bill = newBill(parseInt(amount, 10), name, startDate, endDate, type);
@@ -156,10 +88,10 @@ addBillDialog.addEventListener('submit', e => {
     billsSelectedMonth[day - 1].push(bill);
     calendarElement.addBillToDay(day, bill);
 
-    updateCurrentBills();
+    totalsTable.updateTotals();
 });
 
 const billListDialog = document.getElementById('bill-list-dialog');
 billListDialog.addEventListener('bill-pay', () => {
-    updateCurrentBills();
+    totalsTable.updateTotals();
 });

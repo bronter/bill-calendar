@@ -36,10 +36,6 @@
                 }
             }
 
-            .past-due {
-                color: var(--red-ink-color);
-            }
-
             #nav-group {
                 display: flex;
                 align-items: center;
@@ -98,18 +94,6 @@
                 #month-label {
                     margin-left: 16px;
                 }
-                #totals {
-                    position: fixed;
-                    bottom: 0;
-                    left: 0;
-                    background-color: var(--header-color);
-                    border-right: 3px solid black;
-                    border-top: 3px solid black;
-                    height: 96px;
-                }
-                td {
-                    padding: 2px 8px;
-                }
             }
         </style>
         <!-- It looks like modulepreload is standard now but still not supported in Firefox and Safari? -->
@@ -119,6 +103,7 @@
         <link rel="modulepreload" href="bills.js">
         <script type="module" src="calendar-day.js"></script>
         <script type="module" src="bill-calendar.js"></script>
+        <script type="module" src="totals-table.js"></script>
         <script type="module" src="ui-main.js"></script>
         <script type="module" src="add-bill-dialog.js"></script>
         <script type="module" src="bill-list-dialog.js"></script>
@@ -416,20 +401,43 @@
                 <calendar-day day-of-month="31"></calendar-day>
             </template>
         </bill-calendar>
-        <table id="totals">
-            <tr>
-                <td>Total Due: </td>
-                <td id="total-due"></td>
-            </tr>
-            <tr>
-                <td>Total Past Due:</td>
-                <!-- Set the past-due class when amount is non-zero-->
-                <td id="total-past-due" class="past-due"></td>
-            </tr>
-            <tr>
-                <td>Total Paid:</td>
-                <td id="total-paid"></td>
-            </tr>
-        </table>
+        <totals-table id="totals">
+            <template>
+                <style>
+                    .past-due {
+                        color: var(--red-ink-color);
+                    }
+                    @media screen and (max-width: 600px) {
+                        table {
+                            position: fixed;
+                            bottom: 0;
+                            left: 0;
+                            background-color: var(--header-color);
+                            border-right: 3px solid black;
+                            border-top: 3px solid black;
+                            height: 96px;
+                        }
+                        td {
+                            padding: 2px 8px;
+                        }
+                    }
+                </style>
+                <table id="totals">
+                    <tr>
+                        <td>Total Due: </td>
+                        <td id="total-due"></td>
+                    </tr>
+                    <tr>
+                        <td>Total Past Due:</td>
+                        <!-- Set the past-due class when amount is non-zero-->
+                        <td id="total-past-due" class="past-due"></td>
+                    </tr>
+                    <tr>
+                        <td>Total Paid:</td>
+                        <td id="total-paid"></td>
+                    </tr>
+                </table>
+            </template>
+        </totals-table>
     </body>
 </html>
