@@ -12,13 +12,16 @@ const RESOURCES = [
     '/bill-list-dialog.js',
     '/bills.js',
     '/calendar-day.js',
+    '/date-models.js',
     '/favicon_512.png',
     '/favicon.ico',
     '/favicon.png',
     '/index.html',
+    '/intl.js',
     '/manifest.json',
     '/singleton-element.js',
     '/templated-element.js',
+    '/totals-table.js',
     '/ui-main.js'
 ].map(r => BASE_URL + r);
 

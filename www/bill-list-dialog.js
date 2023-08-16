@@ -1,6 +1,7 @@
 import TemplatedElement from "./templated-element.js";
 import SingletonElement from "./singleton-element.js";
-import { dateForDay, billsForDay } from "./ui-main.js";
+import { selectedDateModel } from "./date-models.js";
+import { billsForDate } from "./bills.js";
 
 class BillOptionsRow extends TemplatedElement {
     static templateId = 'bill-options-row-template';
@@ -55,8 +56,8 @@ class BillListDialog extends SingletonElement {
         })
     }
 
-    #populateBillList(day, date) {
-        const bills = billsForDay(day);
+    #populateBillList(date) {
+        const bills = billsForDate(date);
         const billItems = [];
         const eventListener = e => {
             const clone = new e.constructor(e.type, e);
@@ -73,11 +74,11 @@ class BillListDialog extends SingletonElement {
     }
 
     showModal(day) {
-        const date = dateForDay(day);
+        const date = selectedDateModel.dateFromDayOfMonth(day);
         this.date = date;
         const dateStr = date.toLocaleDateString(undefined, BillListDialog.#headerDateFormatOptions);
         this.dateHeader.textContent = dateStr;
-        this.#populateBillList(day, date);
+        this.#populateBillList(date);
         this.dialog.showModal();
     }
 }

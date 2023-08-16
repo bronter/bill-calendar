@@ -14,6 +14,20 @@
                 navigator.serviceWorker.register('service-worker.js', { type: 'module' });
             }
         </script>
+        <!-- It looks like modulepreload is standard now but still not supported in Safari. -->
+        <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/rel/modulepreload#browser_compatibility -->
+        <!-- These preloads probably don't do much with the serviceWorker cache in place; mainly for fallback. -->
+        <link rel="modulepreload" href="templated-element.js">
+        <link rel="modulepreload" href="singleton-element.js">
+        <link rel="modulepreload" href="bills.js">
+        <link rel="modulepreload" href="date-models.js">
+        <link rel="modulepreload" href="intl.js">
+        <script type="module" src="calendar-day.js"></script>
+        <script type="module" src="bill-calendar.js"></script>
+        <script type="module" src="totals-table.js"></script>
+        <script type="module" src="ui-main.js"></script>
+        <script type="module" src="add-bill-dialog.js"></script>
+        <script type="module" src="bill-list-dialog.js"></script>
         <style>
             /* TODO: High contrast option (test with all color vision simulations)*/
             :root {
@@ -96,17 +110,6 @@
                 }
             }
         </style>
-        <!-- It looks like modulepreload is standard now but still not supported in Firefox and Safari? -->
-        <!-- Looks like it was recently merged into WebKit so maybe Safari support soon, no news on FF...-->
-        <link rel="modulepreload" href="templated-element.js">
-        <link rel="modulePreload" href="singleton-element.js">
-        <link rel="modulepreload" href="bills.js">
-        <script type="module" src="calendar-day.js"></script>
-        <script type="module" src="bill-calendar.js"></script>
-        <script type="module" src="totals-table.js"></script>
-        <script type="module" src="ui-main.js"></script>
-        <script type="module" src="add-bill-dialog.js"></script>
-        <script type="module" src="bill-list-dialog.js"></script>
     </head>
     <body>
         <!-- Importing HTML templates from HTML documents probably won't
@@ -293,22 +296,23 @@
                         opacity: 0;
                     }
 
-                    :host([start-day="Sunday"]) > padding-day {
+                    /* Using numeric days, 0 = Sunday */
+                    :host([start-day="0"]) > padding-day {
                         display: none;
                     }
-                    :host([start-day="Monday"]) > padding-day:nth-of-type(n+2) {
+                    :host([start-day="1"]) > padding-day:nth-of-type(n+2) {
                         display: none;
                     }
-                    :host([start-day="Tuesday"]) > padding-day:nth-of-type(n+3) {
+                    :host([start-day="2"]) > padding-day:nth-of-type(n+3) {
                         display: none;
                     }
-                    :host([start-day="Wednesday"]) > padding-day:nth-of-type(n+4) {
+                    :host([start-day="3"]) > padding-day:nth-of-type(n+4) {
                         display: none;
                     }
-                    :host([start-day="Thursday"]) > padding-day:nth-of-type(n+5) {
+                    :host([start-day="4"]) > padding-day:nth-of-type(n+5) {
                         display: none;
                     }
-                    :host([start-day="Friday"]) > padding-day:nth-of-type(n+6) {
+                    :host([start-day="5"]) > padding-day:nth-of-type(n+6) {
                         display: none;
                     }
                     /* No need for Saturday since all padding cells should be visible */

@@ -9,6 +9,10 @@ class RecurringPeriod {
     billingDatesInMonth(month, year) {
         return [];
     }
+
+    billRecursOnDate(date) {
+        return false;
+    }
 }
 
 class NonRecurring extends RecurringPeriod {
@@ -21,6 +25,13 @@ class NonRecurring extends RecurringPeriod {
         }
 
         return [];
+    }
+
+    billRecursOnDate(date) {
+        const datesMatch = date.getFullYear() === this.startDate.getFullYear() &&
+                           date.getMonth() === this.startDate.getMonth() &&
+                           date.getDate() === this.startDate.getDate();
+        return datesMatch;
     }
 }
 
@@ -46,6 +57,19 @@ class Monthly extends RecurringPeriod {
 
         return [];
     }
+
+    billRecursOnDate(date) {
+        // Bill won't recur past the end date
+        if (this.endDate && this.endDate.getTime() < date.getTime()) {
+            return false;
+        }
+        // Bill won't recur before the start date
+        if (this.startDate.getTime() > date.getTime()) {
+            return false;
+        }
+
+        return this.startDate.getDate() === date.getDate();
+    }
 }
 
 class Annual extends RecurringPeriod {
@@ -59,6 +83,27 @@ class Annual extends RecurringPeriod {
             }
         }
         return [];
+    }
+
+    billRecursOnDate(date) {
+        if (this.endDate && this.endDate.getTime() < date.getTime()) {
+            return false;
+        }
+        if (this.startDate.getTime() > date.getTime()) {
+            return false;
+        }
+
+        const daysInPreviousMonth = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
+        if (this.startDate.getMonth() === (date.getMonth() - 1) && this.startDate.getDate() > daysInPreviousMonth) {
+            const temp = new Date(date);
+            temp.setMonth(date.getMonth() - 1);
+            temp.setDate(this.startDate);
+
+            return temp2.getDate() === date.getDate();
+        }
+
+        return this.startDate.getMonth() === date.getMonth() &&
+               this.startDate.getDate() === date.getDate();
     }
 }
 
@@ -114,7 +159,7 @@ export function resetForTest() {
     bills = [];
 }
 
-export function newBill(amount, name, startDate, endDate=null, type) {
+export function newBill(amount, name, startDate, endDate, type) {
     const bill = new Bill(name, amount, startDate, endDate, type);
     bills.push(bill);
     return bill;
@@ -131,4 +176,15 @@ export function billsForMonth(month, year) {
     }
 
     return billsThisMonth;
+}
+
+export function billsForDate(date) {
+    const billsMatchingDate = [];
+    for (const bill of bills) {
+        if (bill.recurringPeriod.billRecursOnDate(date)) {
+            billsMatchingDate.push(bill);
+        }
+    }
+
+    return billsMatchingDate;
 }

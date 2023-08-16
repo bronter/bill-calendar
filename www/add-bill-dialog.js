@@ -1,5 +1,5 @@
 import SingletonElement from "./singleton-element.js";
-import { dateForDay } from "./ui-main.js";
+import { selectedDateModel } from "./date-models.js";
 
 class AddBillDialog extends SingletonElement {
     static #headerDateFormatOptions = {
@@ -39,7 +39,7 @@ class AddBillDialog extends SingletonElement {
     }
 
     showModal(day) {
-        const date = dateForDay(day);
+        const date = selectedDateModel.dateFromDayOfMonth(day);
         this.billDate = date;
         const addBillDate = date.toLocaleDateString(undefined, AddBillDialog.#headerDateFormatOptions);
         this.addBillDate.textContent = addBillDate;

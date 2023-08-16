@@ -1,6 +1,6 @@
 import SingletonElement from "./singleton-element.js";
 import { billsForMonth } from "./bills.js";
-import DateController from './date-controller.js';
+import { currentDateModel } from './date-models.js';
 
 class TotalsTable extends SingletonElement {
     updateTotals() {
@@ -8,11 +8,12 @@ class TotalsTable extends SingletonElement {
         let totalPastDue = 0;
         let totalPaid = 0;
 
-        const currentYear = DateController.currentYear;
-        const currentMonth = DateController.currentMonth;
-        const currentTime = DateController.currentDate.getTime();
+        const currentYear = currentDateModel.currentYear;
+        const currentMonth = currentDateModel.currentMonth;
+        const currentTime = currentDateModel.currentDate.getTime();
         const billsThisMonth = billsForMonth(currentMonth, currentYear);
 
+        // TODO: What if we went multiple months without paying a bill?
         for (const [index, dayBills] of billsThisMonth.entries()) {
             const date = new Date(currentYear, currentMonth, index + 1);
             const dateStr = date.toISOString();
@@ -43,7 +44,7 @@ class TotalsTable extends SingletonElement {
         this.totalPaidElement = shadowRoot.getElementById('total-paid');
 
         this.updateTotals();
-        DateController.onDateChange(this.updateTotals.bind(this));
+        currentDateModel.onDateChange(this.updateTotals.bind(this));
     }
 }
 

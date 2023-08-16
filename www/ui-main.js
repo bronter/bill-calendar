@@ -1,80 +1,38 @@
 import { billsForMonth, newBill } from "./bills.js";
-
-// Not i18n friendly but that's more work for later
-const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-const yyyymmLength = 'yyyy-mm'.length;
+import { currentDateModel, selectedDateModel } from "./date-models.js";
+import { monthNames } from "./intl.js";
 
 const dateNav = document.getElementById('date-nav');
 const monthLabel = document.getElementById('month-label');
 
-let selectedDate;
-let selectedDayOfMonth; // Not zero-based
 let selectedYear;
 let selectedMonth;
-let selectedDateString;
-let daysInMonth;
-let startDay;
 
 let billsSelectedMonth = [];
-
-function afterDateUpdateData(newDate, dateString) {
-    selectedDate = newDate;
-    selectedDateString = dateString;
-    selectedDayOfMonth = selectedDate.getDate();
-    selectedYear = selectedDate.getFullYear();
-    selectedMonth = selectedDate.getMonth();
-    daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
-    startDay = days[new Date(selectedYear, selectedMonth, 1).getDay()];
-}
-afterDateUpdateData(new Date());
-
-const formattedYear = String(selectedYear).padStart(4, '0');
-const formattedMonth = String(selectedMonth + 1).padStart(2, '0');
-const formattedDay = String(selectedDayOfMonth).padStart(2, '0');
-selectedDateString = `${formattedYear}-${formattedMonth}-${formattedDay}`;
 
 // top-level await ftw
 await customElements.whenDefined('bill-calendar');
 const calendarElement = document.getElementById('calendar');
 
 // Stuff that is updated every time including the first time
-function updateHeadersAndCalendar() {
-    dateNav.value = selectedDateString;
-    monthLabel.textContent = months[selectedMonth];
-    calendarElement.setAttribute('days-in-month', daysInMonth);
-    calendarElement.setAttribute('start-day', startDay);
-    billsSelectedMonth = billsForMonth(selectedMonth, selectedYear);
-    calendarElement.setBills(billsSelectedMonth);
+function updateHeaders() {
+    monthLabel.textContent = monthNames[selectedDateModel.selectedMonth];
+    billsSelectedMonth = billsForMonth(selectedDateModel.selectedMonth, selectedDateModel.selectedYear);
 }
-updateHeadersAndCalendar();
-calendarElement.setAttribute('selected-day', selectedDayOfMonth);
+updateHeaders();
 
+dateNav.valueAsNumber = currentDateModel.currentDate.getTime();
 dateNav.addEventListener('change', e => {
-    // date string is always in the format yyyy-mm-dd
-    const dateStr = e.target.value;
+    updateHeaders();
 
-    const newSelectedDayOfMonth = parseInt(dateStr.substring(yyyymmLength + 1), 10);
-    if (dateStr.substring(0, yyyymmLength) !== selectedDateString.substring(0, yyyymmLength)) {
-        // Giving the Date constructor a time with no timezone makes it use the local timezone
-        // It shouldn't matter what the time is since we don't use that info, so I set it to midnight.
-        const newDate = new Date(`${dateStr}T00:00:00`);
-        afterDateUpdateData(newDate, dateStr);
-        updateHeadersAndCalendar();
-        calendarElement.setAttribute('selected-day', selectedDayOfMonth);
-    } else if (newSelectedDayOfMonth !== selectedDayOfMonth) {
-        selectedDayOfMonth = newSelectedDayOfMonth;
-        calendarElement.setAttribute('selected-day', selectedDayOfMonth);
-    }
+    // TODO: In Firefox it seems that this the date input's value is a date at midnight UTC
+    // Confirm that this is the same on Chrome; if it isn't we're gonna have some problems.
+    const newDate = new Date(e.target.valueAsNumber);
+    // Since the date was in UTC, we need to do some math to get it to match the local timezone.
+    // Note that we divide the timezone offset by 60 since it is a value in minutes rather than hours.
+    newDate.setHours(newDate.getHours() + (newDate.getTimezoneOffset() / 60));
+    selectedDateModel.selectedDate = newDate;
 });
-
-export function dateForDay(dayOfMonth) {
-    return new Date(selectedYear, selectedMonth, dayOfMonth);
-}
-
-export function billsForDay(dayOfMonth) {
-    return billsSelectedMonth[dayOfMonth - 1];
-}
 
 const addBillDialog = document.getElementById('add-bill-dialog');
 

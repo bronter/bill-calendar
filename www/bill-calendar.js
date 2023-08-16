@@ -1,4 +1,7 @@
 import SingletonElement from "./singleton-element.js";
+import { selectedDateModel } from "./date-models.js";
+import { billsForMonth } from "./bills.js";
+import { weekdayNames } from "./intl.js";
 
 class BillCalendar extends SingletonElement {
     constructor() {
@@ -8,32 +11,38 @@ class BillCalendar extends SingletonElement {
     }
 
     connectedCallback() {
-        const selectedDay = this.getAttribute('selected-day');
-        if (selectedDay) {
-            this.calendarDayNodeList.item(selectedDay - 1).classList.add('current-day');
+        // Replace the default English weekdays with ones matching the navigator's language setting
+        const headerWeekDays = this.shadowRoot.querySelectorAll('.day-of-week-header');
+        headerWeekDays.forEach((elem, index) => {
+            elem.innerHTML = weekdayNames[index];
+        });
+
+        this.calendarDayNodeList.item(selectedDateModel.selectedDayOfMonth - 1).classList.add('current-day');
+        this.setAttribute('start-day', selectedDateModel.firstWeekDayOfMonth);
+        selectedDateModel.onSelectedDateChange(this.#updateSelectedDate.bind(this));
+    }
+
+    #updateSelectedDate(oldDate, newDate) {
+        const oldSelectedDay = oldDate.getDate() - 1;
+        const newSelectedDay = newDate.getDate() - 1;
+
+        this.calendarDayNodeList.item(oldSelectedDay).classList.remove('current-day');
+        this.calendarDayNodeList.item(newSelectedDay).classList.add('current-day');
+
+        if (
+            oldDate.getMonth() !== newDate.getMonth() ||
+            oldDate.getFullYear() !== newDate.getFullYear()
+        ) {
+            this.setAttribute('days-in-month', selectedDateModel.daysInSelectedMonth);
+            this.setAttribute('start-day', selectedDateModel.firstWeekDayOfMonth);
+            this.#setBills(billsForMonth(selectedDateModel.selectedMonth, selectedDateModel.selectedYear));
         }
     }
 
-    static get observedAttributes() {
-        return ['selected-day'];
-    }
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (name === 'selected-day') {
-            if (oldValue) {
-                this.calendarDayNodeList.item(parseInt(oldValue, 10) - 1).classList.remove('current-day');
-            }
-            this.calendarDayNodeList.item(parseInt(newValue, 10) - 1).classList.add('current-day');
-        }
-    }
-
-    setBills(allBills) {
+    #setBills(allBills) {
         allBills.forEach((bills, index) => {
             this.calendarDayNodeList.item(index).bills = bills;
         });
-    }
-
-    setBillsForDay(dayOfMonth, bills) {
-        this.calendarDayNodeList.item(dayOfMonth - 1).bills = bills;
     }
 
     addBillToDay(dayOfMonth, bill) {
