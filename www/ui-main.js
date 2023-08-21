@@ -1,14 +1,9 @@
-import { billsForMonth, newBill } from "./bills.js";
+import { newBill } from "./bills.js";
 import { currentDateModel, selectedDateModel } from "./date-models.js";
 import { monthNames } from "./intl.js";
 
 const dateNav = document.getElementById('date-nav');
 const monthLabel = document.getElementById('month-label');
-
-let selectedYear;
-let selectedMonth;
-
-let billsSelectedMonth = [];
 
 // top-level await ftw
 await customElements.whenDefined('bill-calendar');
@@ -17,7 +12,6 @@ const calendarElement = document.getElementById('calendar');
 // Stuff that is updated every time including the first time
 function updateHeaders() {
     monthLabel.textContent = monthNames[selectedDateModel.selectedMonth];
-    billsSelectedMonth = billsForMonth(selectedDateModel.selectedMonth, selectedDateModel.selectedYear);
 }
 updateHeaders();
 
@@ -43,7 +37,6 @@ addBillDialog.addEventListener('submit', e => {
     const {amount, name, startDate, endDate, type} = e.detail;
     const bill = newBill(parseInt(amount, 10), name, startDate, endDate, type);
     const day = startDate.getDate();
-    billsSelectedMonth[day - 1].push(bill);
     calendarElement.addBillToDay(day, bill);
 
     totalsTable.updateTotals();
