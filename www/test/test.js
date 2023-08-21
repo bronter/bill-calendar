@@ -40,11 +40,19 @@ export default function run(description, testsCB, _testMain=testMain) {
 
     _testMain.appendChild(testFileSection);
 
+    const beforeEachFns = [];
+    function beforeEach(cb) {
+        beforeEachFns.push(cb);
+    }
+
     const testPromises = [];
     function test(...args) {
+        for(const fn of beforeEachFns) {
+            fn();
+        }
         testPromises.push(_test(testsList, ...args));
     }
-    testsCB(test);
+    testsCB(test, beforeEach);
 
     return Promise.allSettled(testPromises);
 }

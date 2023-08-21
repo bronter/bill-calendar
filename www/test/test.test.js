@@ -74,4 +74,31 @@ run('test runner tests', test => {
         expect(resultElement.classList.contains('failed')).toStrictlyEqual(true);
         expect(resultElement.classList.contains('passed')).toStrictlyEqual(false);
     });
+
+    test('beforeEach functions should run before each test', expect => {
+        const testMain = new DocumentFragment();
+        // We'll just see if beforeEach pushes the number to this array
+        // before the test pushes its number
+        const testData = [];
+        const testFunc = (test, beforeEach) => {
+            beforeEach(() => {
+                testData.push(1);
+            });
+            test('beforeEach', expect => {
+                expect(testData.length).toStrictlyEqual(1);
+                testData.push(2);
+            });
+        };
+
+        run('beforeEach test', testFunc, testMain);
+
+        const resultElement = testMain.querySelector('li');
+        expect(resultElement).not.toEqual(null);
+        expect(resultElement.classList.contains('failed')).toStrictlyEqual(false);
+        expect(resultElement.classList.contains('passed')).toStrictlyEqual(true);
+
+        expect(testData.length).toStrictlyEqual(2);
+        expect(testData[0]).toStrictlyEqual(1);
+        expect(testData[1]).toStrictlyEqual(2);
+    });
 });
