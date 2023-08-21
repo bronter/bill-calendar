@@ -24,6 +24,7 @@ const RESOURCES = [
     '/totals-table.js',
     '/ui-main.js'
 ].map(r => BASE_URL + r);
+const testURLRegex = new RegExp(/\/test\//);
 
 self.addEventListener('install', event => {
     const cachePromise = caches
@@ -70,6 +71,13 @@ async function doFetch(event) {
 
 async function cacheOrFetch(event) {
     const { request } = event;
+
+    // Never cache when testing; it's annoying.
+    // We need to check the referrer so that it picks up imported modules
+    if (testURLRegex.test(request.referrer)) {
+        return doFetch(event);
+    }
+
     const cacheResponse = await caches.match(request);
     const fetchPromise = doFetch(event);
     if (cacheResponse) {
