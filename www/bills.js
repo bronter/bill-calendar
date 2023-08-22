@@ -68,13 +68,25 @@ class Monthly extends RecurringPeriod {
             return false;
         }
 
-        return this.startDate.getDate() === date.getDate();
+        const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+        const startDayOfMonth = this.startDate.getDate();
+        // Does the bill start on a date beyond the end of the month for the date we're testing?
+        if (startDayOfMonth > daysInMonth) {
+            // If so, is the date we're testing on the last day of the month?
+            return date.getDate() === daysInMonth; 
+        }
+        return startDayOfMonth === date.getDate();
     }
 }
 
 class Annual extends RecurringPeriod {
     static type = 'annual';
     billingDatesInMonth(month, year) {
+        const endOfMonth = new Date(year, month + 1, 0);
+        if (this.endDate && this.endDate.getTime() < endOfMonth.getTime()) {
+            return [];
+        }
+
         if (year >= this.startDate.getFullYear()) {
             const newDate = new Date(this.startDate);
             newDate.setFullYear(year);
@@ -99,7 +111,7 @@ class Annual extends RecurringPeriod {
             temp.setMonth(date.getMonth() - 1);
             temp.setDate(this.startDate);
 
-            return temp2.getDate() === date.getDate();
+            return temp.getDate() === date.getDate();
         }
 
         return this.startDate.getMonth() === date.getMonth() &&
