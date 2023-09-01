@@ -54,7 +54,10 @@ async function addToCache(request, response) {
 async function doFetch(event) {
     const { request } = event;
     try {
-        const response = await fetch(request);
+        // The http cache can be annoying, and it only helps before the serviceworker is loaded,
+        // which has already happened by the time this fetch function is called.
+        // So I'm going to set the caching mode to 'no-store', which bypasses the http cache entirely.
+        const response = await fetch(request, { cache: 'no-store' });
         if (response.ok) {
             const clone = response.clone();
             addToCache(request, clone);
