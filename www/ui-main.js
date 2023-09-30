@@ -14,11 +14,10 @@ function updateHeaders() {
     monthLabel.textContent = monthNames[selectedDateModel.selectedMonth];
 }
 updateHeaders();
+selectedDateModel.onSelectedDateChange(updateHeaders);
 
 dateNav.valueAsNumber = currentDateModel.currentDate.getTime();
 dateNav.addEventListener('change', e => {
-    updateHeaders();
-
     // TODO: In Firefox it seems that this the date input's value is a date at midnight UTC
     // Confirm that this is the same on Chrome; if it isn't we're gonna have some problems.
     const newDate = new Date(e.target.valueAsNumber);

@@ -19,6 +19,7 @@ class BillCalendar extends SingletonElement {
 
         this.calendarDayNodeList.item(selectedDateModel.selectedDayOfMonth - 1).classList.add('current-day');
         this.setAttribute('start-day', selectedDateModel.firstWeekDayOfMonth);
+        this.setAttribute('days-in-month', selectedDateModel.daysInSelectedMonth);
         selectedDateModel.onSelectedDateChange(this.#updateSelectedDate.bind(this));
     }
 
